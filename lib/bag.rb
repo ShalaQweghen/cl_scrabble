@@ -6,6 +6,8 @@ class Bag
 		fill_bag
 	end
 
+	private
+
 	def p1
 		%w[Q Z J X K].each do |l|
 			1.times { @bag << l }

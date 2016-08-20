@@ -6,6 +6,39 @@ class Board
 		prepare_board
 	end
 
+	def display
+		place_bonus
+		blocks
+		rows = split_rows.reverse
+		row_number = 15
+		puts "     a   b   c   d   e   f   g   h   i   j   k   l   m   n   o"
+		puts "   #{@lcu + @t_line * 14 + @ver + @ver + @ver + @rcu}"
+		rows.each do |row|
+			if row_number < 10
+				print "#{row_number}  "
+			else
+				print "#{row_number} "
+			end
+			row.each do |value|
+				if value != " "
+					print "#{@hor}#{value} "
+				else
+					print "#{@hor} #{value} "
+				end
+			end
+			print "#{@hor} #{row_number}"
+			row_number -= 1
+			if row_number > 0
+				puts "\n   #{@lcm + @m_line * 14 + @ver + @ver + @ver + @rcm}"
+			else
+				puts "\n   #{@lcd + @b_line * 14 + @ver + @ver + @ver + @rcd}"
+			end
+		end
+		puts "     a   b   c   d   e   f   g   h   i   j   k   l   m   n   o"
+	end
+
+	private
+
 	def prepare_board
 		letters = ("a".."o").to_a
 		numbers = (1..15).to_a
@@ -67,37 +100,6 @@ class Board
 		w2_bonus
 		l3_bonus
 		l2_bonus
-	end
-
-	def display
-		place_bonus
-		blocks
-		rows = split_rows.reverse
-		row_number = 15
-		puts "     a   b   c   d   e   f   g   h   i   j   k   l   m   n   o"
-		puts "   #{@lcu + @t_line * 14 + @ver + @ver + @ver + @rcu}"
-		rows.each do |row|
-			if row_number < 10
-				print "#{row_number}  "
-			else
-				print "#{row_number} "
-			end
-			row.each do |value|
-				if value != " "
-					print "#{@hor}#{value} "
-				else
-					print "#{@hor} #{value} "
-				end
-			end
-			print "#{@hor} #{row_number}"
-			row_number -= 1
-			if row_number > 0
-				puts "\n   #{@lcm + @m_line * 14 + @ver + @ver + @ver + @rcm}"
-			else
-				puts "\n   #{@lcd + @b_line * 14 + @ver + @ver + @ver + @rcd}"
-			end
-		end
-		puts "     a   b   c   d   e   f   g   h   i   j   k   l   m   n   o"
 	end
 end
 

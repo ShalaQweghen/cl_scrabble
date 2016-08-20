@@ -15,11 +15,13 @@ module Technical
 			return 8
 		elsif %w[Q Z].include?(letter)
 			return 10
+		else
+			return 0
 		end
 	end
 
 	def calculate_points(word)
-		word.chars.inject(0) {|v, p| v + point(p)}
+		word.chars.inject(0) { |sum, letter| sum + point(letter) }
 	end
 end
 			
