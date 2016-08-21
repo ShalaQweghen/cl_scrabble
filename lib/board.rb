@@ -4,10 +4,10 @@ class Board
 	def initialize
 		@board = {}
 		prepare_board
+		place_bonus
 	end
 
 	def display
-		place_bonus
 		blocks
 		rows = split_rows.reverse
 		row_number = 15
@@ -20,8 +20,10 @@ class Board
 				print "#{row_number} "
 			end
 			row.each do |value|
-				if value != " "
+				if %w[2w 3w 2l 3l].include?(value)
 					print "#{@hor}#{value} "
+				elsif value == " "
+					print "#{@hor} #{value} "
 				else
 					print "#{@hor} #{value} "
 				end
@@ -102,7 +104,3 @@ class Board
 		l2_bonus
 	end
 end
-
-#board = Board.new
-
-#board.display

@@ -69,6 +69,6 @@ class Bag
 	end
 end
 
-bag = Bag.new
-puts bag.bag.size
-p bag.bag
+#bag = Bag.new
+#puts bag.bag.size
+#p bag.bag
