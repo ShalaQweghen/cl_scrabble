@@ -25,18 +25,6 @@ module Technical
 	def calculate_points(word)
 		word.chars.inject(0) { |sum, letter| sum + point(letter) }
 	end
-
-	# Gets a random letter from the letter list.
-	def pick_from(bag)
-		bag.shuffle!.pop
-	end
-
-	# Add specific amount of letter to the player's letters. Default values are for the first
-	# draw at the beginning of the game.
-	def draw_letters(bag, amount=7, letters=[])
-		amount.times { letters << pick_from(bag) }
-		return letters
-	end
 end
 
 # bag = %w[a b c d e f g h i j k l m n o p r s s s s t t]
