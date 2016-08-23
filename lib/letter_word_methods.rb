@@ -42,4 +42,10 @@ module LetterWordMethods
 			i += 1
 		end
 	end
+
+	def change_letters(passed_letters)
+		passed_letters.each do |l|
+			@player.letters.delete_at(@player.letters.index(l))
+		end
+	end
 end

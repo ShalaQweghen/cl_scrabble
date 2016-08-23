@@ -28,10 +28,17 @@ class Game
 		@player.draw_letters(@bag.bag, @player.letters)
 		turn_statement
 		display_letters
+		ask_pass
 	end
 
 	def proceed
 		while true
+			if @response
+				@player.pass
+				change_letters(@player.passed)
+				@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
+				display_letters
+			end
 			@player.proceed
 			word_range
 			if @dic.include?(@player.word) && @set.all? { |spot| extra_word(spot) }
@@ -42,6 +49,7 @@ class Game
 				@board.display
 				turn_statement
 				display_letters
+				ask_pass
 			end
 		end
 	end

@@ -1,6 +1,6 @@
 class Player
 	attr_accessor :letters, :score
-	attr_reader :name, :word, :start, :direction
+	attr_reader :name, :word, :start, :direction, :passed
 
 	def initialize(name)
 		@name = name
@@ -15,6 +15,11 @@ class Player
 	def draw_letters(bag, letters=[], amount=7)
 		amount.times { letters << pick_from(bag) }
 		return letters
+	end
+
+	def pass
+		print "Enter the letters you want to pass: "
+		@passed = gets.chomp.upcase.chars
 	end
 
 	def pick_starting_square
