@@ -30,6 +30,16 @@ module LetterWordMethods
 		end
 	end
 
+	def non_discard
+		i = 0
+		@set.each do |square|
+			if @board.board[square.to_sym] == @player.word[i]
+				@non_discard << @player.word[i]
+			end
+			i += 1
+		end
+	end
+
 	def place_word
 		i = 0
 		@set.each do |square|

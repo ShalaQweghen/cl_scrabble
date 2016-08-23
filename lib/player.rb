@@ -1,11 +1,12 @@
 class Player
-	attr_accessor :letters, :score
+	attr_accessor :letters, :score, :turn_pointer
 	attr_reader :name, :word, :start, :direction, :passed
 
-	def initialize(name)
+	def initialize(name, turn_pointer)
 		@name = name
 		@letters = []
 		@score = 0
+		@turn_pointer = turn_pointer
 	end
 
 	def pick_from(bag)

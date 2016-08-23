@@ -12,44 +12,50 @@ class Game
 	include LetterWordMethods
 	include ExtraWord
 
-	def initialize(name)
-		@player = Player.new(name)
+	def initialize
 		@board = Board.new
 		@bag = Bag.new
 		@dic = File.open("./lib/dic/sowpods.txt").read.split("\n")
 		@non_discard = []
-		@turn = 1
+		@turns = 1
+		how_many_players
 		start
 		proceed
 	end
 
 	def start
-		@board.display
-		@player.draw_letters(@bag.bag, @player.letters)
-		turn_statement
-		display_letters
-		ask_pass
+		pick_players
+		players_list
+		@players_list.each { |player| player.draw_letters(@bag.bag, player.letters, 7 - player.letters.size)}
+		whose_turn
 	end
 
 	def proceed
 		while true
+			@board.display
+			turn_statement
+			display_letters
+			ask_pass
 			if @response
 				@player.pass
 				change_letters(@player.passed)
 				@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
-				display_letters
+				turn
+				turn_pointer
+				whose_turn
+				next
 			end
 			@player.proceed
 			word_range
+			non_discard
 			if @dic.include?(@player.word) && @set.all? { |spot| extra_word(spot) }
 				give_points
 				place_word
 				discard_used_letters
 				@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
-				@board.display
-				turn_statement
-				display_letters
-				ask_pass
+				turn
+				turn_pointer
+				whose_turn
 			end
 		end
 	end
@@ -65,4 +71,4 @@ class Game
 	end
 end
 
-Game.new("shero")
+Game.new
