@@ -4,16 +4,19 @@ require_relative "./lib/player.rb"
 require_relative "./lib/game_logic.rb"
 require_relative "./lib/point_methods.rb"
 require_relative "./lib/letter_word_methods.rb"
+require_relative "./lib/extra_word.rb"
 
 class Game
 	include GameLogic
 	include PointMethods
 	include LetterWordMethods
+	include ExtraWord
 
 	def initialize(name)
 		@player = Player.new(name)
 		@board = Board.new
 		@bag = Bag.new
+		@dic = File.open("./lib/dic/sowpods.txt").read.split("\n")
 		@non_discard = []
 		@turn = 1
 		start
@@ -30,13 +33,16 @@ class Game
 	def proceed
 		while true
 			@player.proceed
-			give_points
-			place_word
-			discard_used_letters
-			@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
-			@board.display
-			turn_statement
-			display_letters
+			word_range
+			if @dic.include?(@player.word) && @set.all? { |spot| extra_word(spot) }
+				give_points
+				place_word
+				discard_used_letters
+				@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
+				@board.display
+				turn_statement
+				display_letters
+			end
 		end
 	end
 
@@ -46,7 +52,6 @@ class Game
 	end
 
 	def give_points
-		word_range
 		calculate_points
 		@player.score += @sum unless @sum.nil?
 	end

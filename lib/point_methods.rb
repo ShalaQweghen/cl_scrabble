@@ -21,13 +21,13 @@ module PointMethods
 		end
 	end
 
-	def calculate_points
-		bonus = calculate_bonus
+	def calculate_points(word=@player.word, set=@set)
+		bonus = calculate_bonus(set)
 		i = 0
 		@sum = 0
-		@player.word.chars.map do |letter|
-			unless bonus[:letter][@set[i].to_sym].nil?
-				@sum += (point(letter) * bonus[:letter][@set[i].to_sym])
+		word.chars.map do |letter|
+			unless bonus[:letter][set[i].to_sym].nil?
+				@sum += (point(letter) * bonus[:letter][set[i].to_sym])
 			else
 				@sum += point(letter)
 			end
@@ -41,9 +41,9 @@ module PointMethods
 		@sum
 	end
 
-	def calculate_bonus
+	def calculate_bonus(set)
 		bonus = { word: {}, letter: {} }
-		@set.each do |square|
+		set.each do |square|
 			case @board.board[square.to_sym]
 			when "2w" then bonus[:word][square.to_sym] = 2
 			when "3w" then bonus[:word][square.to_sym] = 3

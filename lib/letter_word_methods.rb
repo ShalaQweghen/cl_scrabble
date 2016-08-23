@@ -3,10 +3,19 @@ module LetterWordMethods
 	def word_range
 		if @player.direction == "right"
 			last = (@player.start[0].ord + @player.word.length - 1).chr
-			@set = (@player.start[0]..last).map { |l| l + @player.start[1] }
+			if @player.start.length == 2
+				@set = (@player.start[0]..last).map { |l| l + @player.start[1] }
+			else
+				@set = (@player.start[0]..last).map { |l| l + @player.start[1..2] }
+			end
 		else
-			last = @player.start[1].to_i - @player.word.length + 1
-			@set = (last..@player.start[1].to_i).map { |n| @player.start[0] + n.to_s }.reverse
+			if @player.start.length == 2
+				last = @player.start[1].to_i - @player.word.length + 1
+				@set = (last..@player.start[1].to_i).map { |n| @player.start[0] + n.to_s }.reverse
+			else
+				last = @player.start[1..2].to_i - @player.word.length + 1
+				@set = (last..@player.start[1..2].to_i).map { |n| @player.start[0] + n.to_s }.reverse
+			end
 		end
 		return @set
 	end
