@@ -26,6 +26,9 @@ module PointMethods
 		i = 0
 		@sum = 0
 		word.chars.map do |letter|
+			if !@wild_tile.nil? && letter == @wild_tile
+				letter = "@"
+			end
 			unless bonus[:letter][set[i].to_sym].nil?
 				@sum += (point(letter) * bonus[:letter][set[i].to_sym])
 			else
@@ -38,7 +41,7 @@ module PointMethods
 				@sum *= b
 			end
 		end
-		@sum
+		first_move? ? @sum *= 2 : @sum
 	end
 
 	def calculate_bonus(set)

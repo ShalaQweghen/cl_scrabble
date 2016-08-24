@@ -23,6 +23,10 @@ module LetterWordMethods
 	def discard_used_letters
 		@player.word.chars.each do |l|
 			unless @non_discard.include?(l)
+				if !@wild_tile.nil? && l == @wild_tile
+					l = "@"
+					@wild_tile = nil
+				end
 				@player.letters.delete_at(@player.letters.index(l))
 			else
 				@non_discard.delete_at(@non_discard.index(l))
@@ -56,7 +60,20 @@ module LetterWordMethods
 
 	def change_letters(passed_letters)
 		passed_letters.each do |l|
-			@player.letters.delete_at(@player.letters.index(l))
+			@bag.bag << @player.letters.delete_at(@player.letters.index(l))
 		end
 	end
+
+	def wild_tile
+		print "What letter would you like to replace with the wild tile?: "
+		@wild_tile = gets.chomp.upcase
+	end
+
+	def set_wild_tile
+		if @player.word.include?("@")
+			wild_tile
+			@player.word[@player.word.index("@")] = @wild_tile
+		end
+	end
+
 end

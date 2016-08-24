@@ -64,4 +64,29 @@ module GameLogic
 		@player_4 = Player.new("Willow", 4) if @players == 4
 		@player = @player_1
 	end
+
+	def game_over?
+		if @players == 2
+			@game_over = true if @pass == 6
+		elsif @players == 3
+			@game_over = true if @pass == 9
+		elsif @players == 4
+			@game_over = true if @pass == 12
+		end
+	end
+
+	def set_winner
+		@players_list.each { |player| @points << player.score }
+		@winner = @points.index(@points.max)
+		case @winner
+		when 0 then @winner = @player_1
+		when 1 then @winner = @player_2
+		when 2 then @winner = @player_3
+		when 3 then @winner = @player_4
+		end
+	end
+
+	def finish
+		puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!"
+	end
 end
