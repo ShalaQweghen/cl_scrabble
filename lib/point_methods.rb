@@ -53,4 +53,9 @@ module PointMethods
 		end
 		return bonus
 	end
+
+	def give_points
+		calculate_points
+		@player.score += @sum unless @sum.nil?
+	end
 end

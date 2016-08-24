@@ -18,8 +18,8 @@ module GameLogic
 		end
 	end
 
-	def add_to_word_list
-		@wordlist[@word] = @set
+	def add_to_word_list(word=@player.word, sum=@sum)
+		@wordlist[word] = sum
 	end
 
 	def players_list
@@ -56,31 +56,12 @@ module GameLogic
 	end
 
 	def pick_players
-		case @players
-		when 2 then two_players
-		when 3 then three_players
-		when 4 then four_players
+		if @players >= 2
+			@player_1 = Player.new("Shero", 1)
+			@player_2 = Player.new("Zahra", 2)
 		end
-	end
-
-	def two_players
-		@player_1 = Player.new("Shero", 1)
-		@player_2 = Player.new("Zahra", 2)
-		@player = @player_1
-	end
-
-	def three_players
-		@player_1 = Player.new("Shero", 1)
-		@player_2 = Player.new("Zahra", 2)
-		@player_3 = Player.new("Zoe", 3)
-		@player = @player_1
-	end
-
-	def four_players
-		@player_1 = Player.new("Shero", 1)
-		@player_2 = Player.new("Zahra", 2)
-		@player_3 = Player.new("Zoe", 3)
-		@player_4 = Player.new("Willow", 4)
+		@player_3 = Player.new("Zoe", 3) if @players >= 3
+		@player_4 = Player.new("Willow", 4) if @players == 4
 		@player = @player_1
 	end
 end

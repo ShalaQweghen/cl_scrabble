@@ -25,16 +25,12 @@ module ExtraWord
 	end
 
 	def extra_word(spot)
-		p @non_discard
 		if @non_discard.include?(@board.board[spot.to_sym]) && (("A".."Z").include?(@board.board[up_or_left(spot).to_sym]) || ("A".."Z").include?(@board.board[down_or_right(spot).to_sym]))
-			puts "holala"
 			@non_discard.delete_at(@non_discard.index(@board.board[spot.to_sym]))
 			return true
 		elsif !("A".."Z").include?(@board.board[up_or_left(spot).to_sym]) && !("A".."Z").include?(@board.board[down_or_right(spot).to_sym])
-			puts "kolala"
 			return true
 		else
-			puts "yolala"
 			cloned_spot = spot.clone
 			set = [].push(spot)
 			word = [].push(@player.word[@set.index(spot)])

@@ -51,6 +51,7 @@ module LetterWordMethods
 			@board.board[square.to_sym] = @player.word[i]
 			i += 1
 		end
+		@word_list << @player.word
 	end
 
 	def change_letters(passed_letters)
