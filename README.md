@@ -4,6 +4,10 @@ If you don't know how to play Scrabble, click [here](https://en.wikipedia.org/wi
 
 Clone the game and enjoy it. If you have any feedbacks, I will very much appreciate.
 
+### Number of players
+
+You can play the game as 2, 3, or 4 players.
+
 ### The starting square and the direction of a word
 
 State the starting square of your word using the names of the columns and the rows: eg. h8, b12. When you state the starting square and the direction(right or down), the game will make a range for it. For example, we will place the word "money" starting the from the square "h8" to the right side. The game will make the range accordingly as "h8=M, i8=O, j8=N, k8=E, l8=Y". If one of the squares in the range of your word is occupied, as long as the occupying letter is the same as the letter corresponding that square in your word, your word will be placed on the board.
