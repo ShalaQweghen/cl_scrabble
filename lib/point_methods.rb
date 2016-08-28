@@ -1,7 +1,6 @@
 module PointMethods
 
-	# Returns the point value of letters.
-	def point(letter)
+	def set_point(letter)
 		if %w[L S U N R T O A I E].include?(letter)
 			return 1
 		elsif %w[G D].include?(letter)
@@ -30,9 +29,9 @@ module PointMethods
 				letter = "@"
 			end
 			unless bonus[:letter][set[i].to_sym].nil?
-				@sum += (point(letter) * bonus[:letter][set[i].to_sym])
+				@sum += (set_point(letter) * bonus[:letter][set[i].to_sym])
 			else
-				@sum += point(letter)
+				@sum += set_point(letter)
 			end
 			i += 1
 		end

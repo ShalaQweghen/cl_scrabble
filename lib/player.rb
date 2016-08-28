@@ -10,7 +10,11 @@ class Player
 	end
 
 	def pick_from(bag)
-		bag.shuffle!.pop
+		unless bag.empty?
+			bag.shuffle!.pop
+		else
+			puts "No tiles left in the bag!"
+		end
 	end
 
 	def draw_letters(bag, letters=[], amount=7)
@@ -24,13 +28,19 @@ class Player
 	end
 
 	def pick_starting_square
-		print "Enter the starting square of your word: "
+		print "\nEnter the starting square of your word: "
 		@start = gets.chomp.downcase.to_sym
 	end
 
 	def pick_direction
 		print "Enter the direction of the word (right/down): "
 		@direction = gets.chomp.downcase
+		unless %w[right down].include?(@direction)
+			puts "\n=================================================="
+			puts "Your direction should be either 'right' or 'down'."
+			puts "=================================================="
+			pick_direction
+		end
 	end
 
 	def make_word

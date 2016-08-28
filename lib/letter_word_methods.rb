@@ -1,40 +1,34 @@
 module LetterWordMethods
 
-	def word_range
+	def set_word_range
 		if @player.direction == "right"
-			last = (@player.start[0].ord + @player.word.length - 1).chr
-			if @player.start.length == 2
-				@set = (@player.start[0]..last).map { |l| l + @player.start[1] }
-			else
-				@set = (@player.start[0]..last).map { |l| l + @player.start[1..2] }
-			end
+			set_word_range_to_right
 		else
-			if @player.start.length == 2
-				last = @player.start[1].to_i - @player.word.length + 1
-				@set = (last..@player.start[1].to_i).map { |n| @player.start[0] + n.to_s }.reverse
-			else
-				last = @player.start[1..2].to_i - @player.word.length + 1
-				@set = (last..@player.start[1..2].to_i).map { |n| @player.start[0] + n.to_s }.reverse
-			end
+			set_word_range_to_down
 		end
 		return @set
 	end
 
-	def discard_used_letters
-		@player.word.chars.each do |l|
-			unless @non_discard.include?(l)
-				if !@wild_tile.nil? && l == @wild_tile
-					l = "@"
-					@wild_tile = nil
-				end
-				@player.letters.delete_at(@player.letters.index(l))
-			else
-				@non_discard.delete_at(@non_discard.index(l))
-			end
+	def set_word_range_to_right
+		last = (@player.start[0].ord + @player.word.length - 1).chr
+		if @player.start.length == 2
+			@set = (@player.start[0]..last).map { |l| l + @player.start[1] }
+		else
+			@set = (@player.start[0]..last).map { |l| l + @player.start[1..2] }
 		end
 	end
 
-	def non_discard
+	def set_word_range_to_down
+		if @player.start.length == 2
+			last = @player.start[1].to_i - @player.word.length + 1
+			@set = (last..@player.start[1].to_i).map { |n| @player.start[0] + n.to_s }.reverse
+		else
+			last = @player.start[1..2].to_i - @player.word.length + 1
+			@set = (last..@player.start[1..2].to_i).map { |n| @player.start[0] + n.to_s }.reverse
+		end
+	end
+
+	def set_non_discard
 		i = 0
 		@set.each do |square|
 			if @board.board[square.to_sym] == @player.word[i]
@@ -44,11 +38,28 @@ module LetterWordMethods
 		end
 	end
 
+	def discard_used_letters
+		@player.word.chars.each do |l|
+			puts @non_discard
+			unless @non_discard.include?(l)
+				puts 1
+				if !@wild_tile.nil? && l == @wild_tile
+					l = "@"
+					@wild_tile = nil
+				end
+				@player.letters.delete_at(@player.letters.index(l))
+			else
+				puts 2
+				@non_discard.delete_at(@non_discard.index(l))
+			end
+		end
+	end
+
 	def place_word
+		@word_list = []
 		i = 0
 		@set.each do |square|
-			if @board.board[square.to_sym] == @player.word[i]
-				@non_discard << @player.word[i]
+			if @non_discard.include?(@player.word[i])
 				i += 1
 				next
 			end
@@ -64,14 +75,14 @@ module LetterWordMethods
 		end
 	end
 
-	def wild_tile
+	def ask_wild_tile
 		print "What letter would you like to replace with the wild tile?: "
 		@wild_tile = gets.chomp.upcase
 	end
 
 	def set_wild_tile
 		if @player.word.include?("@")
-			wild_tile
+			ask_wild_tile
 			@player.word[@player.word.index("@")] = @wild_tile
 		end
 	end

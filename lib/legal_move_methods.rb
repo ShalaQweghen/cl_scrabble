@@ -1,4 +1,4 @@
-module LegalMove
+module LegalMoveMethods
 
 	def first_move?
 		return true if @board.board.all? { |k,v| !("A".."Z").include?(v) }
@@ -6,7 +6,6 @@ module LegalMove
 
 	def legal_move?
 		if first_move?
-			p @set
 			return true if @set.include?("h8")
 		elsif @set.any? { |square| ("A".."Z").include?(@board.board[up_or_left(square).to_sym]) }
 			return true

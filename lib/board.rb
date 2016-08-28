@@ -4,6 +4,8 @@ class Board
 	def initialize
 		@board = {}
 		prepare_board
+		@bold_on = "\033[1m"
+		@bold_off = "\033[0m"
 		place_bonus
 	end
 
@@ -20,12 +22,16 @@ class Board
 				print "#{row_number} "
 			end
 			row.each do |value|
-				if %w[2w 3w 2l 3l].include?(value)
-					print "#{@hor}#{value} "
-				elsif value == " "
-					print "#{@hor} #{value} "
+				if value == "3w"
+					print "#{@hor}\x1b[31m#{value} \x1b[00m"
+				elsif value == "2w"
+					print "#{@hor}\x1b[35m#{value} \x1b[00m"
+				elsif value == "3l"
+					print "#{@hor}\x1b[34m#{value} \x1b[00m"
+				elsif value == "2l"
+					print "#{@hor}\x1b[36m#{value} \x1b[00m"
 				else
-					print "#{@hor} #{value} "
+					print "#{@hor}#{@bold_on} #{value} #{@bold_off}"
 				end
 			end
 			print "#{@hor} #{row_number}"
