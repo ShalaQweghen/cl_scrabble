@@ -5,7 +5,7 @@ module SaveLoadMethods
 
 	def give_options
 		if Dir.exists?("./saves")
-			print "Would you like to load a saved game?#{@bold_on}(y/n)#{@bold_off} "
+			print "Would you like to load a saved game?#{@bold_on}(y/n)#{@bold_off}: "
 			@choice = gets.chomp
 		end
 	end

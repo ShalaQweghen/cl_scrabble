@@ -38,20 +38,25 @@ module LetterWordMethods
 		end
 	end
 
+	def letters_on_rack?
+		return @player.word.chars.all? { |letter| @player.letters.include?(letter) || letter == @wild_tile || @non_discard.include?(letter) }
+	end
+
 	def discard_used_letters
-		@player.word.chars.each do |l|
-			puts @non_discard
-			unless @non_discard.include?(l)
-				puts 1
-				if !@wild_tile.nil? && l == @wild_tile
-					l = "@"
-					@wild_tile = nil
+		if letters_on_rack?
+			@player.word.chars.each do |l|
+				unless @non_discard.include?(l)
+					if !@wild_tile.nil? && l == @wild_tile
+						l = "@"
+						@wild_tile = nil
+					end
+					@player.letters.delete_at(@player.letters.index(l))
+				else
+					@non_discard.delete_at(@non_discard.index(l))
 				end
-				@player.letters.delete_at(@player.letters.index(l))
-			else
-				puts 2
-				@non_discard.delete_at(@non_discard.index(l))
 			end
+		else
+			raise TypeError
 		end
 	end
 
@@ -76,8 +81,8 @@ module LetterWordMethods
 	end
 
 	def ask_wild_tile
-		print "What letter would you like to replace with the wild tile?: "
-		@wild_tile = gets.chomp.upcase
+		@output.puts "What letter would you like to replace with the wild tile?:"
+		@wild_tile = @input.gets.chomp.upcase
 	end
 
 	def set_wild_tile

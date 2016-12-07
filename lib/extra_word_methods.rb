@@ -1,19 +1,19 @@
 module ExtraWordMethods
 
 	def up_move(move)
-		move = move[0] + (move.length == 2 ? move[1].to_i.next.to_s : move[1..2].to_i.next.to_s)
+		return move[0] + (move.length == 2 ? move[1].to_i.next.to_s : move[1..2].to_i.next.to_s)
 	end
 
 	def down_move(move)
-		move = move[0] + (move.length == 2 ? (move[1].to_i - 1).to_s : (move[1..2].to_i - 1).to_s)
+		return move[0] + (move.length == 2 ? (move[1].to_i - 1).to_s : (move[1..2].to_i - 1).to_s)
 	end
 
 	def left_move(move)
-		move = (move[0].ord - 1).chr + (move.length == 2 ? move[1] : move[1..2])
+		return (move[0].ord - 1).chr + (move.length == 2 ? move[1] : move[1..2])
 	end
 
 	def right_move(move)
-		move = move[0].ord.next.chr + (move.length == 2 ? move[1] : move[1..2])
+		return move[0].ord.next.chr + (move.length == 2 ? move[1] : move[1..2])
 	end
 
 	def up_or_left(move)
@@ -25,11 +25,11 @@ module ExtraWordMethods
 	end
 
 	def occupied_up_or_left?(spot)
-		("A".."Z").include?(@board.board[up_or_left(spot).to_sym])
+		return ("A".."Z").include?(@board.board[up_or_left(spot).to_sym])
 	end
 
 	def occupied_down_or_right?(spot)
-		("A".."Z").include?(@board.board[down_or_right(spot).to_sym])
+		return ("A".."Z").include?(@board.board[down_or_right(spot).to_sym])
 	end
 
 	def set_up_or_left_extra_word(spot)

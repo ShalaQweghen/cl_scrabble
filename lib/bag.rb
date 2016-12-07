@@ -68,7 +68,3 @@ class Bag
 		p12
 	end
 end
-
-#bag = Bag.new
-#puts bag.bag.size
-#p bag.bag

@@ -12,18 +12,18 @@ module PlayerMethods
 
 	def get_player_names
 		if @players >= 2
-			print "Enter Player 1's name: "
-			@name_1 = gets.chomp.capitalize
-			print "Enter Player 2's name: "
-			@name_2 = gets.chomp.capitalize
+			STDOUT.puts "Enter Player 1's name:"
+			@name_1 = STDIN.gets.chomp.capitalize
+			@output.puts "Enter Player 2's name:"
+			@name_2 = @input.gets.chomp.capitalize
 		end
 		if @players >= 3
-			print "Enter Player 3's name: "
-			@name_3 = gets.chomp.capitalize
+			@output.puts "Enter Player 3's name:"
+			@name_3 = @input.gets.chomp.capitalize
 		end
 		if @players == 4
-			print "Enter Player 4's name: "
-			@name_4 = gets.chomp.capitalize
+			@output.puts "Enter Player 4's name:"
+			@name_4 = @input.gets.chomp.capitalize
 		end
 	end
 
@@ -48,23 +48,13 @@ module PlayerMethods
 		end
 	end
 
-	def ask_pass
-		print "\nDo you want to pass and change letters?#{@bold_on}(y/n)#{@bold_off} "
-		@passing = gets.chomp.downcase
-		case @passing
-		when "y" then @passing = true
-		when "n" then @passing = false
-		end
-		return @passing
-	end
-
 	def set_players_number
-		print "\nHow many players will play the game? "
-		@players = gets.chomp.to_i
+		@output.puts "\nHow many players will play the game?: "
+		@players = @input.gets.chomp.to_i
 		unless (2..4).include?(@players)
-			puts "\n=================================="
-			puts "You can play as 2, 3 or 4 players."
-			puts "=================================="
+			@output.puts "\n=================================="
+			@output.puts "You can play as 2, 3 or 4 players."
+			@output.puts "=================================="
 			set_players_number
 		end
 	end
