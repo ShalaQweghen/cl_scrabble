@@ -61,9 +61,7 @@ module PlayerMethods
 
 	def set_whose_turn
 		@players_list.each do |player|
-			if player.turn_pointer == @turns
-				@player = player
-			end
+			@player = player if player.turn_pointer == @turns
 		end
 	end
 end

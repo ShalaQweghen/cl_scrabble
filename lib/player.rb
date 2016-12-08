@@ -38,12 +38,12 @@ class Player
 	end
 
 	def pick_direction(output, input)
-		output.puts "Enter the direction of the word (right/down):"
+		output.puts "Enter the direction of the word (r/d):"
 		@direction = input.gets.chomp.downcase
-		unless %w[right down].include?(@direction)
-			output.puts "\n=================================================="
-			output.puts "Your direction should be either 'right' or 'down'."
-			output.puts "=================================================="
+		unless %w[r d].include?(@direction)
+			output.puts "\n==============================================================="
+			output.puts "Your direction should be either 'r' for right or 'd' for down."
+			output.puts "==============================================================="
 			pick_direction(output, input)
 		end
 	end

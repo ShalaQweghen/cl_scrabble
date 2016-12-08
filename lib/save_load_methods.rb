@@ -2,7 +2,6 @@ require "yaml"
 
 module SaveLoadMethods
 	
-
 	def give_options
 		if Dir.exists?("./saves")
 			print "Would you like to load a saved game?#{@bold_on}(y/n)#{@bold_off}: "

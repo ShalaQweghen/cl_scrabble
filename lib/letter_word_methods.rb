@@ -1,7 +1,7 @@
 module LetterWordMethods
 
 	def set_word_range
-		if @player.direction == "right"
+		if @player.direction == "r"
 			set_word_range_to_right
 		else
 			set_word_range_to_down
@@ -92,4 +92,13 @@ module LetterWordMethods
 		end
 	end
 
+	def process_word
+		set_word_range
+		set_wild_tile
+		set_non_discard
+	end
+
+	def valid_word?
+		return (@dic.include?(@player.word) && @set.all? { |spot| extra_word?(spot) }) && legal_move?
+	end
 end

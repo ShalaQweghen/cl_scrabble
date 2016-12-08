@@ -8,7 +8,7 @@ module GameMethods
 		@output.puts "Before playing, make sure to read README."
 		@output.puts "Have fun!"
 		@output.puts "========================================================"
-		if @is_on_network
+		if @on_network
 			STDOUT.puts "========================================================"
 			STDOUT.puts "Welcome to the Command-line Scrabble!"
 			STDOUT.puts "It is a game of making words with the letters you have."
@@ -19,8 +19,8 @@ module GameMethods
 		end
 	end
 
-	def switch_players
-		if @is_on_network
+	def switch_stream
+		if @on_network
 			if @turns.odd?
 				@input = STDIN
 				@output = STDOUT
@@ -51,7 +51,7 @@ module GameMethods
 		at_exit do
 			@output.puts
 			@output.puts "GOODBYE!"
-			if @is_on_network
+			if @on_network
 				STDOUT.puts
 				STDOUT.puts "GOODBYE!"
 			end
@@ -59,9 +59,9 @@ module GameMethods
 		exit
 	end
 
-	def display_letters
-		@output.puts
-		@output.puts "\u2551 #{@player.letters.join(" - ")} \u2551".center(70)
+	def display_letters(player=@player, output=@output)
+		output.puts
+		output.puts "\u2551 #{player.letters.join(" - ")} \u2551".center(70)
 	end
 
 	def turn
@@ -78,12 +78,12 @@ module GameMethods
 		end
 	end
 
-	def turn_statement
-		@output.puts "\n#{@bold_on}Player:#{@bold_off} #{@player.name}\t\t#{@bold_on}|#{@bold_off}  #{@bold_on}Total Points:#{@bold_off} #{@player.score}"
-		@output.puts "#{@bold_on}Letters Left in Bag:#{@bold_off} #{@bag.bag.size}\t#{@bold_on}|#{@bold_off}  #{@bold_on}Word by Prev. Player:#{@bold_off} #{@word_list[0] || 0} for #{@sum || 0} points"
+	def display_turn_statement(player=@player, output=@output)
+		output.puts "\n#{@bold_on}Player:#{@bold_off} #{player.name}\t\t#{@bold_on}|#{@bold_off}  #{@bold_on}Total Points:#{@bold_off} #{player.score}"
+		output.puts "#{@bold_on}Letters Left in Bag:#{@bold_off} #{@bag.bag.size}\t#{@bold_on}|#{@bold_off}  #{@bold_on}Word Prev. Made:#{@bold_off} #{@word_list[0] || 0} for #{@sum || 0} points"
 	end
 
-	def game_over?
+	def check_game_over
 		if @players == 2
 			@game_over = true if @pass == 6
 		elsif @players == 3
@@ -96,7 +96,7 @@ module GameMethods
 	def finish
 		@output.puts
 		@output.puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
-		if @is_on_network
+		if @on_network
 			@output.puts
 			@output.puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
 		end
