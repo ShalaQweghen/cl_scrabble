@@ -1,4 +1,7 @@
-module ExtraWordMethods
+# ========================================
+# Methods related to recording extra words
+# ========================================
+module Scrabble
 
 	def up_move(move)
 		return move[0] + (move.length == 2 ? move[1].to_i.next.to_s : move[1..2].to_i.next.to_s)
@@ -17,11 +20,11 @@ module ExtraWordMethods
 	end
 
 	def up_or_left(move)
-		@player.direction == "right" ? up_move(move) : left_move(move)
+		@player.direction == "r" ? up_move(move) : left_move(move)
 	end
 
 	def down_or_right(move)
-		@player.direction == "right" ? down_move(move) : right_move(move)
+		@player.direction == "r" ? down_move(move) : right_move(move)
 	end
 
 	def occupied_up_or_left?(spot)
@@ -33,24 +36,18 @@ module ExtraWordMethods
 	end
 
 	def set_up_or_left_extra_word(spot)
-		cloned_spot = spot.clone
-		if occupied_up_or_left?(cloned_spot)
-			while occupied_up_or_left?(cloned_spot)
-				cloned_spot = up_or_left(cloned_spot)
-				@extra_word.unshift(@board.board[cloned_spot.to_sym])
-				@extra_set.unshift(cloned_spot)
-			end
+		while occupied_up_or_left?(spot)
+			spot = up_or_left(spot)
+			@extra_word.unshift(@board.board[spot.to_sym])
+			@extra_set.unshift(spot)
 		end
 	end
 
 	def set_down_or_right_extra_word(spot)
-		cloned_spot = spot.clone
-		if occupied_down_or_right?(cloned_spot)
-			while occupied_down_or_right?(cloned_spot)
-				cloned_spot = down_or_right(cloned_spot)
-				@extra_word.push(@board.board[cloned_spot.to_sym])
-				@extra_set.push(spot)
-			end
+		while occupied_down_or_right?(spot)
+			spot = down_or_right(spot)
+			@extra_word.push(@board.board[spot.to_sym])
+			@extra_set.push(spot)
 		end
 	end
 
@@ -59,6 +56,7 @@ module ExtraWordMethods
 		@extra_word = [].push(@player.word[@set.index(spot)])
 		set_up_or_left_extra_word(spot)
 		set_down_or_right_extra_word(spot)
+		@word_list << @extra_word.join
 	end
 
 	def extra_word?(spot)

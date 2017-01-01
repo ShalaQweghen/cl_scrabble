@@ -1,23 +1,7 @@
-module GameMethods
-
-	def welcome
-		@output.puts "========================================================"
-		@output.puts "Welcome to the Command-line Scrabble!"
-		@output.puts "It is a game of making words with the letters you have."
-		@output.puts "Of course, the word should be present in the dictionary."
-		@output.puts "Before playing, make sure to read README."
-		@output.puts "Have fun!"
-		@output.puts "========================================================"
-		if @on_network
-			STDOUT.puts "========================================================"
-			STDOUT.puts "Welcome to the Command-line Scrabble!"
-			STDOUT.puts "It is a game of making words with the letters you have."
-			STDOUT.puts "Of course, the word should be present in the dictionary."
-			STDOUT.puts "Before playing, make sure to read README."
-			STDOUT.puts "Have fun!"
-			STDOUT.puts "========================================================"
-		end
-	end
+# ===============================
+# Methods related to game details
+# ===============================
+module Scrabble
 
 	def switch_stream
 		if @on_network
@@ -80,7 +64,7 @@ module GameMethods
 
 	def display_turn_statement(player=@player, output=@output)
 		output.puts "\n#{@bold_on}Player:#{@bold_off} #{player.name}\t\t#{@bold_on}|#{@bold_off}  #{@bold_on}Total Points:#{@bold_off} #{player.score}"
-		output.puts "#{@bold_on}Letters Left in Bag:#{@bold_off} #{@bag.bag.size}\t#{@bold_on}|#{@bold_off}  #{@bold_on}Word Prev. Made:#{@bold_off} #{@word_list[0] || 0} for #{@sum || 0} points"
+		output.puts "#{@bold_on}Letters Left in Bag:#{@bold_off} #{@bag.bag.size}\t#{@bold_on}|#{@bold_off}  #{@bold_on}Words Prev. Made:#{@bold_off} #{@prev_words || 0} for #{@sum || 0} points"
 	end
 
 	def check_game_over

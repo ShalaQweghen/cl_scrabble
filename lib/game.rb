@@ -1,15 +1,9 @@
 require_relative "./require_files.rb"
 
 class Game
-	include GameMethods
-	include PointMethods
-	include LetterWordMethods
-	include ExtraWordMethods
-	include LegalMoveMethods
-	include PlayerMethods
-	include SaveLoadMethods
+	include Scrabble
 
-	def initialize(config)
+	def initialize(config={})
 		@board = Board.new
 		@bag = Bag.new
 		@dic = File.open("./lib/dic/sowpods.txt").read.split("\n")
@@ -21,17 +15,16 @@ class Game
 		@stream = config[:stream]
 		@on_network = config[:network]
 		@challenging = config[:challenge]
+		@saved = config[:saved]
 		@output = @stream || STDOUT
 		@input = @stream || STDIN
 		@players = 2
 		@bold_on = "\033[1m"
 		@bold_off = "\033[0m"
-		give_options unless @on_network
 		start_new_or_saved_game
 	end
 
 	def start
-		welcome
 		set_players_number unless @on_network
 		get_player_names
 		set_players
@@ -44,10 +37,11 @@ class Game
 	def proceed
 		begin
 			until @game_over
+				reset_word_list
 				switch_stream
 				start_turn
 				@sum = 0
-				@player.pick_starting_square(@output, @input)
+				@player.make_move(@output, @input)
 				save if @player.start.to_s == 'save'
 				if passing_turn?
 					@pass += 1
@@ -91,14 +85,13 @@ class Game
 	end
 
 	def continue_turn
-		@player.proceed(@output, @input)
 		process_word
 		if valid_word?
 			begin
 				discard_used_letters
 			rescue TypeError
 				rescue_type_error
-				@player.pick_starting_square(@output, @input)
+				@player.make_move(@output, @input)
 				continue_turn
 				proceed
 			end

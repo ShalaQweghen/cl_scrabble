@@ -1,4 +1,7 @@
-module LetterWordMethods
+# ====================================
+# Methods related to words and letters
+# ====================================
+module Scrabble
 
 	def set_word_range
 		if @player.direction == "r"
@@ -61,7 +64,6 @@ module LetterWordMethods
 	end
 
 	def place_word
-		@word_list = []
 		i = 0
 		@set.each do |square|
 			if @non_discard.include?(@player.word[i])
@@ -100,5 +102,10 @@ module LetterWordMethods
 
 	def valid_word?
 		return (@dic.include?(@player.word) && @set.all? { |spot| extra_word?(spot) }) && legal_move?
+	end
+
+	def reset_word_list
+		@prev_words = @word_list.clone
+		@word_list = []
 	end
 end

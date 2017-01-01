@@ -25,36 +25,21 @@ class Player
 
 	def pass(output, input)
 		output.puts "Enter the letters you want to pass:"
-		@passed = input.gets.chomp.upcase.chars
+		@passed = input.gets.chomp.upcase.gsub(/[^A-Z@]/, '').chars
 	end
 
-	def pick_starting_square(output, input)
-		@is_passing = false
-		output.puts "\nEnter the starting square of your word:"
-		@start = input.gets.chomp.downcase.to_sym
-		if @start.to_s == 'pass'
-			@is_passing = true
-		end
-	end
-
-	def pick_direction(output, input)
-		output.puts "Enter the direction of the word (r/d):"
-		@direction = input.gets.chomp.downcase
-		unless %w[r d].include?(@direction)
-			output.puts "\n==============================================================="
-			output.puts "Your direction should be either 'r' for right or 'd' for down."
-			output.puts "==============================================================="
-			pick_direction(output, input)
-		end
-	end
-
-	def make_word(output, input)
-		output.puts "Enter your word:"
-		@word = input.gets.chomp.upcase
-	end
-
-	def proceed(output, input)
-		pick_direction(output, input)
-		make_word(output, input)
-	end
+	def make_move(output, input)
+    @is_passing = false
+    output.puts "\nEnter your move (h8 r money):"
+    @start, @direction, @word = input.gets.chomp.downcase.split
+    if @start.to_s == 'pass'
+      @is_passing = true
+    elsif !%w[r d].include?(@direction) && @direction
+      output.puts "\n==============================================================="
+      output.puts "Your direction should be either 'r' for right or 'd' for down."
+      output.puts "==============================================================="
+      make_move(output, input)
+    end
+    @word.upcase! if @word
+  end
 end

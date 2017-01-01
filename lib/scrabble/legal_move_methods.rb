@@ -1,11 +1,10 @@
-module LegalMoveMethods
-
-	def first_move?
-		return @board.board.all? { |k,v| !("A".."Z").include?(v) }
-	end
+# ==============================================
+# Methods related to deciding if a move is legal
+# ==============================================
+module Scrabble
 
 	def legal_move?
-		if first_move?
+		if @turns == 1
 			return @set.include?("h8")
 		elsif @set.any? { |square| ("A".."Z").include?(@board.board[up_or_left(square).to_sym]) }
 			return true

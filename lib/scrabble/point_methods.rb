@@ -1,4 +1,7 @@
-module PointMethods
+# =====================================
+# Methods related to calculating points
+# =====================================
+module Scrabble
 
 	def set_point(letter)
 		if %w[L S U N R T O A I E].include?(letter)
@@ -40,7 +43,7 @@ module PointMethods
 				@sum *= b
 			end
 		end
-		first_move? ? @sum *= 2 : @sum
+		@turns == 1 ? @sum *= 2 : @sum
 	end
 
 	def calculate_bonus(set)
@@ -58,6 +61,7 @@ module PointMethods
 
 	def give_points
 		calculate_points
+		@sum += 60 if @player.letters.empty?
 		@player.score += @sum unless @sum.nil?
 	end
 end

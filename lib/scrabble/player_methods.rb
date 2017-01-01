@@ -1,4 +1,7 @@
-module PlayerMethods
+# ==========================
+# Methods related to players
+# ==========================
+module Scrabble
 
 	def set_players_list
 		if @players == 2
