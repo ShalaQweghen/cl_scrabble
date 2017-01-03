@@ -17,9 +17,9 @@ class Game
 		@on_network = config[:network]
 		@challenging = config[:challenge]
 		@saved = config[:saved]
-		@output = @stream || STDOUT
-		@input = @stream || STDIN
-		@players = 2
+		@output = STDOUT
+		@input = STDIN
+		@players = @on_network ? config[:stream].length + 1 : 2
 		@bold_on = "\033[1m"
 		@bold_off = "\033[0m"
 		start_new_or_saved_game
@@ -39,7 +39,6 @@ class Game
 	def proceed
 		begin
 			until @game_over
-				@output.puts "\nWaiting for the other player to make a word..." if @on_network
 				reset_word_list
 				switch_stream
 				start_turn
@@ -63,11 +62,8 @@ class Game
 
 	def start_turn
 		display_turn_info
-		if @turns == 1 && @on_network
-			@board.display(@stream)
-			display_turn_statement(@player_2, @stream)
-			display_letters(@player_2, @stream)
-			@stream.puts "\nWaiting for the other player to make a word..."
+		@players_list.each do |player|
+			player.output.puts "\nWaiting for the other player to make a word..." if @player != player && @on_network
 		end
 	end
 

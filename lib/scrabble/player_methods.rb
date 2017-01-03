@@ -17,26 +17,26 @@ module Scrabble
 		if @players >= 2
 			STDOUT.puts "Enter Player 1's name:"
 			@name_1 = STDIN.gets.chomp.capitalize
-			@output.puts "Enter Player 2's name:"
-			@name_2 = @input.gets.chomp.capitalize
+			@stream[0].puts "Enter Player 2's name:"
+			@name_2 = @stream[0].gets.chomp.capitalize
 		end
 		if @players >= 3
-			@output.puts "Enter Player 3's name:"
-			@name_3 = @input.gets.chomp.capitalize
+			@stream[1].puts "Enter Player 3's name:"
+			@name_3 = @stream[1].gets.chomp.capitalize
 		end
 		if @players == 4
-			@output.puts "Enter Player 4's name:"
-			@name_4 = @input.gets.chomp.capitalize
+			@stream[2].puts "Enter Player 4's name:"
+			@name_4 = @stream[2].gets.chomp.capitalize
 		end
 	end
 
 	def set_players
 		if @players >= 2
-			@player_1 = Player.new(@name_1, 1)
-			@player_2 = Player.new(@name_2, 2)
+			@player_1 = Player.new(@name_1, 1, STDIN, STDOUT)
+			@player_2 = Player.new(@name_2, 2, @stream[0], @stream[0])
 		end
-		@player_3 = Player.new(@name_3, 3) if @players >= 3
-		@player_4 = Player.new(@name_4, 4) if @players == 4
+		@player_3 = Player.new(@name_3, 3, @stream[1], @stream[1]) if @players >= 3
+		@player_4 = Player.new(@name_4, 4, @stream[2], @stream[2]) if @players == 4
 		@player = @player_1
 	end
 

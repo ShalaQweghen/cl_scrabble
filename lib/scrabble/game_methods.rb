@@ -5,13 +5,8 @@ module Scrabble
 
 	def switch_stream
 		if @on_network
-			if @turns.odd?
-				@input = STDIN
-				@output = STDOUT
-			else
-				@input = @stream
-				@output = @stream
-			end
+			@input = @player.input
+			@output = @player.output
 		end
 	end
 
@@ -46,9 +41,11 @@ module Scrabble
 		exit
 	end
 
-	def display_letters(player=@player, output=@output)
-		output.puts
-		output.puts "\u2551 #{player.letters.join(" - ")} \u2551".center(70)
+	def display_letters
+		@players_list.each do |player|
+			player.output.puts
+			player.output.puts "\u2551 #{player.letters.join(" - ")} \u2551".center(70)
+		end
 	end
 
 	def display_saved_board_on_network
@@ -70,7 +67,9 @@ module Scrabble
 		if @saved && @on_network
 			display_saved_board_on_network
 		else
-			@board.display(@output)
+			@players_list.each do |player|
+				@board.display(player.output)
+			end
 			@output.puts "\nThe game will end at #{@limit.strftime('%H:%M')}.\n" if @limit
 			display_turn_statement
 			display_letters
@@ -91,9 +90,11 @@ module Scrabble
 		end
 	end
 
-	def display_turn_statement(player=@player, output=@output)
-		output.puts "\n#{@bold_on}Player:#{@bold_off} #{player.name}\t\t#{@bold_on}|#{@bold_off}  #{@bold_on}Total Points:#{@bold_off} #{player.score}"
-		output.puts "#{@bold_on}Letters Left in Bag:#{@bold_off} #{@bag.bag.size}\t#{@bold_on}|#{@bold_off}  #{@bold_on}Words Prev. Made:#{@bold_off} #{@prev_words || 0} for #{@sum || 0} points"
+	def display_turn_statement
+		@players_list.each do |player|
+			player.output.puts "\n#{@bold_on}Player:#{@bold_off} #{player.name}\t\t#{@bold_on}|#{@bold_off}  #{@bold_on}Total Points:#{@bold_off} #{player.score}"
+			player.output.puts "#{@bold_on}Letters Left in Bag:#{@bold_off} #{@bag.bag.size}\t#{@bold_on}|#{@bold_off}  #{@bold_on}Words Prev. Made:#{@bold_off} #{@prev_words || 0} for #{@sum || 0} points"
+		end
 	end
 
 	def check_game_over

@@ -1,30 +1,32 @@
 class Player
-	attr_accessor :letters, :score, :turn_pointer
-	attr_reader :name, :word, :start, :direction, :passed, :is_passing
+  attr_accessor :letters, :score, :turn_pointer
+  attr_reader :name, :word, :start, :direction, :passed, :is_passing, :input, :output
 
-	def initialize(name, turn_pointer)
-		@name = name
-		@letters = []
-		@score = 0
-		@turn_pointer = turn_pointer
-		@is_passing = false
-	end
+  def initialize(name, turn_pointer, input=STDIN, output=STDOUT)
+    @name = name
+    @letters = []
+    @score = 0
+    @input = input
+    @output = output
+    @turn_pointer = turn_pointer
+    @is_passing = false
+  end
 
-	def pick_from(bag)
-		bag.shuffle!.pop unless bag.empty?
-	end
+  def pick_from(bag)
+    bag.shuffle!.pop unless bag.empty?
+  end
 
-	def draw_letters(bag, letters=[], amount=7)
-		amount.times { @letters << pick_from(bag) }
-		return @letters.delete_if { |letter| letter.nil? }
-	end
+  def draw_letters(bag, letters=[], amount=7)
+    amount.times { @letters << pick_from(bag) }
+    return @letters.delete_if { |letter| letter.nil? }
+  end
 
-	def pass(output, input)
-		output.puts "Enter the letters you want to pass:"
-		@passed = input.gets.chomp.upcase.gsub(/[^A-Z@]/, '').chars
-	end
+  def pass(output, input)
+    output.puts "Enter the letters you want to pass:"
+    @passed = input.gets.chomp.upcase.gsub(/[^A-Z@]/, '').chars
+  end
 
-	def make_move(output, input)
+  def make_move(output, input)
     @is_passing = false
     output.puts "\nEnter your move (h8 r money):"
     @start, @direction, @word = input.gets.chomp.downcase.split

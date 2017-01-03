@@ -36,18 +36,18 @@ class Interface
   end
 
   def start_network_game
+    print "\nHow many player will there be?: "
+    time = gets.chomp.to_i - 1
     options = give_secondary_options
     server = TCPServer.open("0.0.0.0", 2000)
     puts "\nlocalhost:2000 fired up... Waiting for an opponent to join..."
     puts
-    loop do
-      stream = server.accept
-      options[:stream] = stream
-      options[:network] = true
-      Game.new(options)
-      stream.close
-      exit
+    streams = []
+    time.times do
+      streams << server.accept
     end
+    Game.new(stream: streams, network: true)
+    stream.close
   end
 
   def give_secondary_options
