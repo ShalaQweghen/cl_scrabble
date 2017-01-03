@@ -70,7 +70,7 @@ class Board
 	end
 
 	def place_bonus
-		%w[a1 a8 a15 h15 o15 o8 o1].each { |s| @board[s.to_sym] = "3w" }
+		%w[a1 a8 a15 h15 o15 h1 o8 o1].each { |s| @board[s.to_sym] = "3w" }
 		%w[b2 c3 d4 e5 b14 c13 d12 e11 n2 m3 l4 k5 n14 m13 l12 k11].each { |s| @board[s.to_sym] = "2w" }
 		%w[b6 b10 n6 n10 f2 f6 f10 f14 j2 j6 j10 j14].each { |s| @board[s.to_sym] = "3l" }
 		%w[a4 a12 c7 c9 d1 d8 d15 g3 g7 g9 g13 h4 h12 o4 o12 m7 m9 l1 l8 l15 i3 i7 i9 i13].each { |s| @board[s.to_sym] = "2l" }

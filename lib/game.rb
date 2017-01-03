@@ -12,6 +12,7 @@ class Game
 		@turns = 1
 		@pass = 0
 		@points = []
+		@limit = config[:limit]
 		@stream = config[:stream]
 		@on_network = config[:network]
 		@challenging = config[:challenge]
@@ -29,22 +30,24 @@ class Game
 		get_player_names
 		set_players
 		set_players_list
-		@players_list.each { |player| player.draw_letters(@bag.bag, player.letters, 7 - player.letters.size)}
+		@players_list.each { |player| player.draw_letters(@bag.bag, player.letters, 7 - player.letters.size) }
 		set_whose_turn
+		set_time_limit(@limit)
 		proceed
 	end
 
 	def proceed
 		begin
 			until @game_over
+				@output.puts "\nWaiting for the other player to make a word..." if @on_network
 				reset_word_list
 				switch_stream
 				start_turn
-				@sum = 0
 				@player.make_move(@output, @input)
 				save if @player.start.to_s == 'save'
 				if passing_turn?
 					@pass += 1
+					check_game_over
 					turn
 					set_turn_pointer
 					set_whose_turn
@@ -59,9 +62,7 @@ class Game
 	end
 
 	def start_turn
-		@board.display(@output)
-		display_turn_statement
-		display_letters
+		display_turn_info
 		if @turns == 1 && @on_network
 			@board.display(@stream)
 			display_turn_statement(@player_2, @stream)
@@ -72,7 +73,6 @@ class Game
 
 	def passing_turn?
 		if @player.is_passing
-			check_game_over
 			@player.pass(@output, @input)
 			begin
 				change_letters(@player.passed)
@@ -95,23 +95,27 @@ class Game
 				continue_turn
 				proceed
 			end
-			give_points
-			place_word
-			@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
-			start_turn if @on_network
-			end_turn
+			if (@limit && Time.now < @limit) || !@limit
+				give_points
+				place_word
+				@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
+				start_turn if @on_network
+				end_turn
+			elsif Time.now >= @limit
+				@game_over = true
+			end
 		elsif @challenging
 			@output.puts "\n'#{@player.word}' is not present in the dictionary. Your turn is passed."
-			end_turn
+			@limit && Time.now >= @limit ? @game_over = true : end_turn
 		end
 	end
 
 	def end_turn
-		@output.puts "\nWaiting for the other player to make a word..." if @on_network
 		turn
 		set_turn_pointer
 		set_whose_turn
 		@pass = 0
+		check_game_over
 	end
 
 	def end_game

@@ -1,5 +1,7 @@
 # Command-Line Scrabble
 
+Complete with optional challenge mode and time limit.
+
 If you don't know how to play Scrabble, click [here](https://en.wikipedia.org/wiki/Scrabble) for rules
 
 Clone the game and enjoy it. If you have any feedbacks, I will very much appreciate.
@@ -31,6 +33,10 @@ In order to save the game, enter `save` as your starting square and you will be 
 ### Challenge mode
 
 When you pass `challenge` as an argument to `ruby start_game.rb`, the game will start in the challenge mode. If a player enters a word that is not in the dictionary, his or her turn will be passed.
+
+### Time limit
+
+Players can set how long a game will last. After the specified time, the game will be over and the player with the most points will win. If the time ends while making a word, the word will not count.
 
 ### 2-Player game over network connection
 

@@ -15,6 +15,9 @@ module Scrabble
 		end
 	end
 
+	def set_time_limit(min)
+    @limit = Time.now. + min * 60 if min
+  end
 
 	def rescue_interrupt
 		print "\nDo you want to save the game?(y/n): "
@@ -33,11 +36,11 @@ module Scrabble
 
 	def exit_game
 		at_exit do
-			@output.puts
-			@output.puts "GOODBYE!"
+			STDOUT.puts
+			STDOUT.puts "GOODBYE!"
 			if @on_network
-				STDOUT.puts
-				STDOUT.puts "GOODBYE!"
+				@stream.puts
+				@stream.puts "GOODBYE!"
 			end
 		end
 		exit
@@ -46,6 +49,32 @@ module Scrabble
 	def display_letters(player=@player, output=@output)
 		output.puts
 		output.puts "\u2551 #{player.letters.join(" - ")} \u2551".center(70)
+	end
+
+	def display_saved_board_on_network
+		@board.display(STDOUT)
+		display_turn_statement(@player_1, STDOUT)
+		display_letters(@player_1, STDOUT)
+		@board.display(@stream)
+		display_turn_statement(@player_2, @stream)
+		display_letters(@player_2, @stream)
+		if @output == STDOUT
+			@stream.puts "\nWaiting for the other player to make a word..."
+		else
+			STDOUT.puts "\nWaiting for the other player to make a word..."
+		end
+		@saved = false
+	end
+
+	def display_turn_info
+		if @saved && @on_network
+			display_saved_board_on_network
+		else
+			@board.display(@output)
+			@output.puts "\nThe game will end at #{@limit.strftime('%H:%M')}.\n" if @limit
+			display_turn_statement
+			display_letters
+		end
 	end
 
 	def turn
@@ -68,6 +97,8 @@ module Scrabble
 	end
 
 	def check_game_over
+		@game_over = true if @limit && Time.now  >= @limit
+		@game_over = true if @players_list.any? { |player| player.letters.empty? }
 		if @players == 2
 			@game_over = true if @pass == 6
 		elsif @players == 3
@@ -78,11 +109,19 @@ module Scrabble
 	end
 
 	def finish
-		@output.puts
-		@output.puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
+		puts "TIME IS UP!".center(70) if @limit
+		puts
+		puts @players_list
+		puts
+		puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
+		puts
 		if @on_network
-			@output.puts
-			@output.puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
+			@stream.puts "TIME IS UP!".center(70) if @limit
+			@stream.puts
+			@stream.puts @players_list
+			@stream.puts
+			@stream.puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
+			@stream.puts
 		end
 	end
 end

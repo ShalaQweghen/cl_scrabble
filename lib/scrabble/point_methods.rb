@@ -61,7 +61,7 @@ module Scrabble
 
 	def give_points
 		calculate_points
-		@sum += 60 if @player.letters.empty?
+		@sum += 60 if @player.letters.empty? && @player.word.length == 7
 		@player.score += @sum unless @sum.nil?
 	end
 end

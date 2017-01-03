@@ -11,16 +11,12 @@ class Player
 	end
 
 	def pick_from(bag)
-		unless bag.empty?
-			bag.shuffle!.pop
-		else
-			@output.puts "No tiles left in the bag!"
-		end
+		bag.shuffle!.pop unless bag.empty?
 	end
 
 	def draw_letters(bag, letters=[], amount=7)
-		amount.times { letters << pick_from(bag) }
-		return letters
+		amount.times { @letters << pick_from(bag) }
+		return @letters.delete_if { |letter| letter.nil? }
 	end
 
 	def pass(output, input)
@@ -41,5 +37,9 @@ class Player
       make_move(output, input)
     end
     @word.upcase! if @word
+  end
+
+  def to_s
+    return "#{@name} has got #{@score} points.".center(70)
   end
 end

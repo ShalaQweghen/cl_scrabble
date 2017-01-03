@@ -28,7 +28,8 @@ module Scrabble
 							pass: @pass, 
 							turns: @turns, 
 							word_list: @word_list, 
-							challenging: @challenging }
+							challenging: @challenging,
+							players_list: @players_list }
 		Dir.mkdir("./saves") unless Dir.exists?("./saves")
 		File.open("./saves/#{@save_name}.txt", "w") { |file| file.puts(YAML::dump(config)) }
 		exit_game
@@ -56,6 +57,7 @@ module Scrabble
 		@player = config[:player]
 		@word_list = config[:word_list]
 		@challenging = config[:challenging]
+		@players_list = config[:players_list]
 		proceed
 	end
 

@@ -8,11 +8,14 @@ system('clear')
 
 puts "Connected to the game... Waiting for the opponent..."
 puts
-while line = stream.gets.chomp
-	puts line
-	if line[-1] == ":"
-		answer = STDIN.gets.chomp
-		stream.puts(answer)
-	end
+begin
+  while line = stream.gets.chomp
+  	puts line
+  	if line[-1] == ":"
+  		answer = STDIN.gets.chomp
+  		stream.puts(answer)
+  	end
+  end
+rescue NoMethodError
+  stream.close
 end
-stream.close
