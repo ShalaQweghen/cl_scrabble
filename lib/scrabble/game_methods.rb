@@ -50,7 +50,7 @@ module Scrabble
 
 	def display_saved_board_on_network
 		@board.display(STDOUT)
-		display_turn_statement(@player_1, STDOUT)
+		display_turn_statement
 		display_letters(@player_1, STDOUT)
 		@board.display(@stream)
 		display_turn_statement(@player_2, @stream)
