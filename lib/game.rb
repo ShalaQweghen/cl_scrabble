@@ -27,9 +27,9 @@ class Game
 
 	def start
 		set_players_number unless @on_network
-		get_player_names
 		set_players
 		set_players_list
+		get_player_names
 		@players_list.each { |player| player.draw_letters(@bag.bag, player.letters, 7 - player.letters.size) }
 		set_whose_turn
 		set_time_limit(@limit)

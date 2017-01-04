@@ -4,40 +4,38 @@
 module Scrabble
 
 	def set_players_list
-		if @players == 2
-			@players_list = [@player_1, @player_2]
-		elsif @players == 3
-			@players_list = [@player_1, @player_2, @player_3]
-		elsif @players == 4
-			@players_list = [@player_1, @player_2, @player_3, @player_4]
-		end
+		@players_list = [@player_1, @player_2]
+		@players_list << @player_3 if @players >= 3
+		@players_list << @player_4 if @players == 4
+		@players_list.shuffle!
+		@players_list.each_with_index { |player, idx| player.turn_pointer = idx + 1 }
 	end
 
 	def get_player_names
 		if @players >= 2
-			STDOUT.puts "Enter Player 1's name:"
-			@name_1 = STDIN.gets.chomp.capitalize
-			@stream[0].puts "Enter Player 2's name:"
-			@name_2 = @stream[0].gets.chomp.capitalize
+			@players_list[0].output.puts "Enter Player 1's name:"
+			@players_list[0].name = @players_list[0].input.gets.chomp.capitalize
+			@players_list[1].output.puts "Enter Player 2's name:"
+			@players_list[1].name = @players_list[1].input.gets.chomp.capitalize
 		end
 		if @players >= 3
-			@stream[1].puts "Enter Player 3's name:"
-			@name_3 = @stream[1].gets.chomp.capitalize
+			@players_list[2].output.puts "Enter Player 3's name:"
+			@players_list[2].name = @players_list[2].input.gets.chomp.capitalize
 		end
 		if @players == 4
-			@stream[2].puts "Enter Player 4's name:"
-			@name_4 = @stream[2].gets.chomp.capitalize
+			@players_list[3].output.puts "Enter Player 4's name:"
+			@players_list[3].name = @players_list[3].input.gets.chomp.capitalize
 		end
+		@player = @players_list[0]
 	end
 
 	def set_players
 		if @players >= 2
-			@player_1 = Player.new(@name_1, 1, STDIN, STDOUT)
-			@player_2 = Player.new(@name_2, 2, @stream[0], @stream[0])
+			@player_1 = Player.new(STDIN, STDOUT)
+			@player_2 = Player.new(@stream[0], @stream[0])
 		end
-		@player_3 = Player.new(@name_3, 3, @stream[1], @stream[1]) if @players >= 3
-		@player_4 = Player.new(@name_4, 4, @stream[2], @stream[2]) if @players == 4
-		@player = @player_1
+		@player_3 = Player.new(@stream[1], @stream[1]) if @players >= 3
+		@player_4 = Player.new(@stream[2], @stream[2]) if @players == 4
 	end
 
 	def set_winner

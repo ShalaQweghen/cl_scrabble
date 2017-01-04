@@ -1,9 +1,8 @@
 class Player
-  attr_accessor :letters, :score, :turn_pointer
-  attr_reader :name, :word, :start, :direction, :passed, :is_passing, :input, :output
+  attr_accessor :letters, :score, :turn_pointer, :name
+  attr_reader :word, :start, :direction, :passed, :is_passing, :input, :output
 
-  def initialize(name, turn_pointer, input=STDIN, output=STDOUT)
-    @name = name
+  def initialize(input=STDIN, output=STDOUT)
     @letters = []
     @score = 0
     @input = input
