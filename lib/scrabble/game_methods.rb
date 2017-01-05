@@ -15,9 +15,8 @@ module Scrabble
   end
 
 	def rescue_interrupt
-		print "\nDo you want to save the game?(y/n): "
-		response =gets.chomp.downcase
-		case response
+		@output.puts "\nDo you want to save the game?(y/n):"
+		case @input.gets.chomp.downcase
 		when "y" then save
 		when "n" then exit_game
 		end
@@ -26,16 +25,14 @@ module Scrabble
 	def rescue_type_error
 		@output.puts "\n==============================================="
 		@output.puts "One of the letters is not present on your rack!"
-		@output.puts "==============================================="
+		@output.puts "===============================================\n"
 	end
 
 	def exit_game
 		at_exit do
-			STDOUT.puts
-			STDOUT.puts "GOODBYE!"
+			puts "\nGOODBYE!"
 			if @on_network
-				@stream.puts
-				@stream.puts "GOODBYE!"
+				@stream.each { |s| s.puts "\nGOODBYE!" }
 			end
 		end
 		exit
@@ -43,6 +40,7 @@ module Scrabble
 
 	def display_letters
 		@players_list.each do |player|
+			next if !@on_network && player != @player
 			player.output.puts
 			player.output.puts "\u2551 #{player.letters.join(" - ")} \u2551".center(70)
 		end
@@ -67,12 +65,17 @@ module Scrabble
 		if @saved && @on_network
 			display_saved_board_on_network
 		else
-			@players_list.each do |player|
-				@board.display(player.output)
+			if @on_network
+				@players_list.each { |player| @board.display(player.output) }
+			else
+				@board.display(@player.output)
 			end
 			@output.puts "\nThe game will end at #{@limit.strftime('%H:%M')}.\n" if @limit
 			display_turn_statement
 			display_letters
+		end
+		@players_list.each do |player|
+			player.output.puts "\nWaiting for the other player to make a word..." if @player != player && @on_network
 		end
 	end
 
@@ -92,8 +95,9 @@ module Scrabble
 
 	def display_turn_statement
 		@players_list.each do |player|
-			player.output.puts "\n#{@bold_on}Player:#{@bold_off} #{player.name}\t\t#{@bold_on}|#{@bold_off}  #{@bold_on}Total Points:#{@bold_off} #{player.score}"
-			player.output.puts "#{@bold_on}Letters Left in Bag:#{@bold_off} #{@bag.bag.size}\t#{@bold_on}|#{@bold_off}  #{@bold_on}Words Prev. Made:#{@bold_off} #{@prev_words || 0} for #{@sum || 0} points"
+				next if !@on_network && player != @player
+				player.output.puts "\n#{@bold_on}Player:#{@bold_off} #{player.name}\t\t#{@bold_on}|#{@bold_off}  #{@bold_on}Total Points:#{@bold_off} #{player.score}"
+				player.output.puts "#{@bold_on}Letters Left in Bag:#{@bold_off} #{@bag.bag.size}\t#{@bold_on}|#{@bold_off}  #{@bold_on}Words Prev. Made:#{@bold_off} #{@prev_words || 0} for #{@sum || 0} points"
 		end
 	end
 
@@ -117,12 +121,14 @@ module Scrabble
 		puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
 		puts
 		if @on_network
-			@stream.puts "TIME IS UP!".center(70) if @limit
-			@stream.puts
-			@stream.puts @players_list
-			@stream.puts
-			@stream.puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
-			@stream.puts
+			@stream.each do |s|
+				s.puts "TIME IS UP!".center(70) if @limit
+				s.puts
+				s.puts @players_list
+				s.puts
+				s.puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
+				s.puts
+			end
 		end
 	end
 end

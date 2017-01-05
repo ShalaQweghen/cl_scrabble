@@ -26,11 +26,11 @@ class Game
 	end
 
 	def start
-		set_players_number unless @on_network
+		set_players_number
 		set_players
 		set_players_list
 		get_player_names
-		@players_list.each { |player| player.draw_letters(@bag.bag, player.letters, 7 - player.letters.size) }
+		get_players_ready
 		set_whose_turn
 		set_time_limit(@limit)
 		proceed
@@ -41,7 +41,7 @@ class Game
 			until @game_over
 				reset_word_list
 				switch_stream
-				start_turn
+				display_turn_info
 				@player.make_move(@output, @input)
 				save if @player.start.to_s == 'save'
 				if passing_turn?
@@ -60,13 +60,6 @@ class Game
 		end_game
 	end
 
-	def start_turn
-		display_turn_info
-		@players_list.each do |player|
-			player.output.puts "\nWaiting for the other player to make a word..." if @player != player && @on_network
-		end
-	end
-
 	def passing_turn?
 		if @player.is_passing
 			@player.pass(@output, @input)
@@ -74,6 +67,7 @@ class Game
 				change_letters(@player.passed)
 			rescue TypeError
 				rescue_type_error
+				passing_turn?
 			end
 			@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
 			return true
@@ -95,7 +89,7 @@ class Game
 				give_points
 				place_word
 				@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
-				start_turn if @on_network
+				display_turn_info if @on_network
 				end_turn
 			elsif Time.now >= @limit
 				@game_over = true

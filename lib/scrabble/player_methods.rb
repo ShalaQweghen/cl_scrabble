@@ -3,6 +3,32 @@
 # ==========================
 module Scrabble
 
+	def set_players_number
+		unless @on_network
+			@output.puts "\nHow many players will play the game?: "
+			@players = @input.gets.chomp.to_i
+			unless (2..4).include?(@players)
+				@output.puts "\n=================================="
+				@output.puts "You can play as 2, 3 or 4 players."
+				@output.puts "=================================="
+				set_players_number
+			end
+		end
+	end
+
+	def set_players
+		@player_1 = Player.new
+		if @on_network
+			@player_2 = Player.new(@stream[0], @stream[0])
+			@player_3 = Player.new(@stream[1], @stream[1]) if @players >= 3
+			@player_4 = Player.new(@stream[2], @stream[2]) if @players == 4
+		else
+			@player_2 = Player.new
+			@player_3 = Player.new if @players >= 3
+			@player_4 = Player.new if @players == 4
+		end
+	end
+
 	def set_players_list
 		@players_list = [@player_1, @player_2]
 		@players_list << @player_3 if @players >= 3
@@ -26,16 +52,15 @@ module Scrabble
 			@players_list[3].output.puts "Enter Player 4's name:"
 			@players_list[3].name = @players_list[3].input.gets.chomp.capitalize
 		end
-		@player = @players_list[0]
 	end
 
-	def set_players
-		if @players >= 2
-			@player_1 = Player.new(STDIN, STDOUT)
-			@player_2 = Player.new(@stream[0], @stream[0])
-		end
-		@player_3 = Player.new(@stream[1], @stream[1]) if @players >= 3
-		@player_4 = Player.new(@stream[2], @stream[2]) if @players == 4
+	def get_players_ready
+		@player = @players_list[0]
+		@players_list.each { |player| player.draw_letters(@bag.bag, player.letters, 7 - player.letters.size) }
+	end
+
+	def set_whose_turn
+		@players_list.each { |player| @player = player if player.turn_pointer == @turns }
 	end
 
 	def set_winner
@@ -46,23 +71,6 @@ module Scrabble
 		when 1 then @winner = @player_2
 		when 2 then @winner = @player_3
 		when 3 then @winner = @player_4
-		end
-	end
-
-	def set_players_number
-		@output.puts "\nHow many players will play the game?: "
-		@players = @input.gets.chomp.to_i
-		unless (2..4).include?(@players)
-			@output.puts "\n=================================="
-			@output.puts "You can play as 2, 3 or 4 players."
-			@output.puts "=================================="
-			set_players_number
-		end
-	end
-
-	def set_whose_turn
-		@players_list.each do |player|
-			@player = player if player.turn_pointer == @turns
 		end
 	end
 end

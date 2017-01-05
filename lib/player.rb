@@ -29,15 +29,23 @@ class Player
     @is_passing = false
     output.puts "\nEnter your move (h8 r money):"
     @start, @direction, @word = input.gets.chomp.downcase.split
-    if @start.to_s == 'pass'
+    if @start == 'pass'
       @is_passing = true
-    elsif !%w[r d].include?(@direction) && @direction
+    elsif @start == 'save'
+      return
+    elsif !%w[r d].include?(@direction)
       output.puts "\n==============================================================="
       output.puts "Your direction should be either 'r' for right or 'd' for down."
       output.puts "==============================================================="
       make_move(output, input)
+    elsif !@word
+      output.puts "\n================================="
+      output.puts "Don't forget to enter your word."
+      output.puts "================================="
+      make_move(output, input)
+    else
+      @word.upcase!
     end
-    @word.upcase! if @word
   end
 
   def to_s
