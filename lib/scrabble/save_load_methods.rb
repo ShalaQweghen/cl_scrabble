@@ -15,24 +15,26 @@ module Scrabble
 		end
 	end
 
-	def save
-		print "Please enter a name for your saved game: "
-		@save_name = gets.chomp.downcase
-		config = {player: @player, 
-							player_1: @player_1, 
-							player_2: @player_2, 
-							player_3: @player_4, 
-							player_4: @player_4, 
-							board: @board, 
-							bag: @bag, 
-							pass: @pass, 
-							turns: @turns, 
-							word_list: @word_list, 
-							challenging: @challenging,
-							players_list: @players_list }
-		Dir.mkdir("./saves") unless Dir.exists?("./saves")
-		File.open("./saves/#{@save_name}.txt", "w") { |file| file.puts(YAML::dump(config)) }
-		exit_game
+	def check_save
+		if @player.start.to_s == 'save'
+			@player.output.puts "Please enter a name for your saved game:"
+			@save_name = @player.input.gets.chomp.downcase
+			config = {player: @player, 
+								player_1: @player_1, 
+								player_2: @player_2, 
+								player_3: @player_4, 
+								player_4: @player_4, 
+								board: @board, 
+								bag: @bag, 
+								pass: @pass, 
+								turns: @turns, 
+								word_list: @word_list, 
+								challenging: @challenging,
+								players_list: @players_list }
+			Dir.mkdir("./saves") unless Dir.exists?("./saves")
+			File.open("./saves/#{@save_name}.txt", "w") { |file| file.puts(YAML::dump(config)) }
+			exit_game
+		end
 	end
 
 	def load_or_new_game
@@ -58,6 +60,15 @@ module Scrabble
 		@word_list = config[:word_list]
 		@challenging = config[:challenging]
 		@players_list = config[:players_list]
+		@players_list.each do |player|
+			if @names[player.name]
+				player.output = @names[player.name]
+				player.input = @names[player.name]
+			else
+				player.output = STDOUT
+				player.input = STDIN
+			end
+		end
 		proceed
 	end
 

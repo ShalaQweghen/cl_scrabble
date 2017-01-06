@@ -5,12 +5,12 @@ module Scrabble
 
 	def set_players_number
 		unless @on_network
-			@output.puts "\nHow many players will play the game?: "
-			@players = @input.gets.chomp.to_i
+			puts "\nHow many players will play the game?: "
+			@players = gets.chomp.to_i
 			unless (2..4).include?(@players)
-				@output.puts "\n=================================="
-				@output.puts "You can play as 2, 3 or 4 players."
-				@output.puts "=================================="
+				puts "\n=================================================================="
+				puts "You can play as 2, 3 or 4 players.".center(70)
+				puts "=================================================================="
 				set_players_number
 			end
 		end

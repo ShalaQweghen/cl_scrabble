@@ -12,13 +12,12 @@ class Game
 		@turns = 1
 		@pass = 0
 		@points = []
+		@names = config[:names] || {}
 		@limit = config[:limit]
 		@stream = config[:stream]
 		@on_network = config[:network]
 		@challenging = config[:challenge]
 		@saved = config[:saved]
-		@output = STDOUT
-		@input = STDIN
 		@players = @on_network ? config[:stream].length + 1 : 2
 		@bold_on = "\033[1m"
 		@bold_off = "\033[0m"
@@ -32,7 +31,7 @@ class Game
 		get_player_names
 		get_players_ready
 		set_whose_turn
-		set_time_limit(@limit)
+		set_time_limit
 		proceed
 	end
 
@@ -40,19 +39,16 @@ class Game
 		begin
 			until @game_over
 				reset_word_list
-				switch_stream
 				display_turn_info
-				@player.make_move(@output, @input)
-				save if @player.start.to_s == 'save'
-				if passing_turn?
-					@pass += 1
-					check_game_over
-					turn
-					set_turn_pointer
-					set_whose_turn
+				@player.make_move
+				check_save
+				if @player.is_passing
+					pass_letters
+					pass_turn
 					next
+				else
+					continue_turn
 				end
-				continue_turn
 			end
 		rescue Interrupt
 			rescue_interrupt
@@ -60,18 +56,23 @@ class Game
 		end_game
 	end
 
-	def passing_turn?
-		if @player.is_passing
-			@player.pass(@output, @input)
-			begin
-				change_letters(@player.passed)
-			rescue TypeError
-				rescue_type_error
-				passing_turn?
-			end
-			@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
-			return true
+	def pass_letters
+		@player.pass
+		begin
+			change_letters
+		rescue TypeError
+			rescue_type_error
+			pass_letters
 		end
+		@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
+	end
+
+	def pass_turn
+		@pass += 1
+		check_game_over
+		turn
+		set_turn_pointer
+		set_whose_turn
 	end
 
 	def continue_turn
@@ -81,7 +82,7 @@ class Game
 				discard_used_letters
 			rescue TypeError
 				rescue_type_error
-				@player.make_move(@output, @input)
+				@player.make_move
 				continue_turn
 				proceed
 			end
@@ -95,8 +96,14 @@ class Game
 				@game_over = true
 			end
 		elsif @challenging
-			@output.puts "\n'#{@player.word}' is not present in the dictionary. Your turn is passed."
+			@player.output.puts "\n'#{@player.word}' is not present in the dictionary. Your turn is passed."
 			@limit && Time.now >= @limit ? @game_over = true : end_turn
+		else
+			@player.output.puts "\n=================================================================="
+			@player.output.puts "'#{@player.word}' is not present in the dictionary. Try again.".center(70)
+			@player.output.puts "=================================================================="
+			@player.make_move
+			continue_turn
 		end
 	end
 
@@ -110,6 +117,6 @@ class Game
 
 	def end_game
 		set_winner
-		finish
+		put_finish_message
 	end
 end

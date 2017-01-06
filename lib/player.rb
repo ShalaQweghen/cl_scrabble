@@ -1,6 +1,6 @@
 class Player
-  attr_accessor :letters, :score, :turn_pointer, :name
-  attr_reader :word, :start, :direction, :passed, :is_passing, :input, :output
+  attr_accessor :letters, :score, :turn_pointer, :name, :input, :output
+  attr_reader :word, :start, :direction, :passed, :is_passing
 
   def initialize(input=STDIN, output=STDOUT)
     @letters = []
@@ -20,29 +20,29 @@ class Player
     return @letters.delete_if { |letter| letter.nil? }
   end
 
-  def pass(output, input)
-    output.puts "Enter the letters you want to pass:"
-    @passed = input.gets.chomp.upcase.gsub(/[^A-Z@]/, '').chars
+  def pass
+    @output.puts "\nEnter the letter(s) you want to pass:"
+    @passed = @input.gets.chomp.upcase.gsub(/[^A-Z@]/, '').chars
   end
 
-  def make_move(output, input)
+  def make_move
     @is_passing = false
-    output.puts "\nEnter your move (h8 r money):"
-    @start, @direction, @word = input.gets.chomp.downcase.split
+    @output.puts "\nEnter your move (h8 r money):"
+    @start, @direction, @word = @input.gets.chomp.downcase.split
     if @start == 'pass'
       @is_passing = true
     elsif @start == 'save'
       return
     elsif !%w[r d].include?(@direction)
-      output.puts "\n==============================================================="
-      output.puts "Your direction should be either 'r' for right or 'd' for down."
-      output.puts "==============================================================="
-      make_move(output, input)
+      @output.puts "\n=================================================================="
+      @output.puts "Your direction should be either 'r' for right or 'd' for down..."
+      @output.puts "=================================================================="
+      make_move
     elsif !@word
-      output.puts "\n================================="
-      output.puts "Don't forget to enter your word."
-      output.puts "================================="
-      make_move(output, input)
+      @output.puts "\n=================================================================="
+      @output.puts "Don't forget to enter your word.".center(70)
+      @output.puts "=================================================================="
+      make_move
     else
       @word.upcase!
     end

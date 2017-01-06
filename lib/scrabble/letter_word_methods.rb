@@ -76,15 +76,15 @@ module Scrabble
 		@word_list << @player.word
 	end
 
-	def change_letters(passed_letters)
-		passed_letters.each do |l|
+	def change_letters
+		@player.passed.each do |l|
 			@bag.bag << @player.letters.delete_at(@player.letters.index(l))
 		end
 	end
 
 	def ask_wild_tile
-		@output.puts "What letter would you like to replace with the wild tile?:"
-		@wild_tile = @input.gets.chomp.upcase
+		@player.output.puts "What letter would you like to replace with the wild tile?:"
+		@wild_tile = @player.input.gets.chomp.upcase
 	end
 
 	def set_wild_tile

@@ -1,6 +1,6 @@
 # Command-Line Scrabble
 
-Complete with optional challenge mode and time limit.
+Complete with optional challenge mode, time limit and multiplayer over a network connection.
 
 If you don't know how to play Scrabble, click [here](https://en.wikipedia.org/wiki/Scrabble) for rules
 
@@ -10,9 +10,9 @@ Clone the game and enjoy it. If you have any feedbacks, I will very much appreci
 
 You can play the game as 2, 3, or 4 players.
 
-### The starting square and the direction of a word
+### Making a word
 
-State the starting square of your word using the names of the columns and the rows: eg. `h8`, `b12`. When you state the starting square and the direction(`r` for right or `d` for down), the game will make a range for it. For example, you want to place the word "money" starting the from the square "h8" to the right side. The game will make the range accordingly as "h8=M, i8=O, j8=N, k8=E, l8=Y". If one of the squares in the range of your word is occupied, as long as the occupying letter is the same as the letter corresponding that square in your word, your word will be placed on the board.
+State the starting square of your word using the names of the columns and the rows: eg. `h8`, `b12`. When you state the starting square and the direction(`r` for right or `d` for down), the game will make a range for it. For example, you want to place the word "money" starting the from the square "h8" to the right side (i.e. `h8 r money`). The game will make the range accordingly as "h8=M, i8=O, j8=N, k8=E, l8=Y". If one of the squares in the range of your word is occupied, as long as the occupying letter is the same as the letter corresponding that square in your word, your word will be placed on the board.
 
 ### Passing
 
@@ -28,7 +28,10 @@ When you place your word on the board and make more than one word, you will get 
 
 ### Saving the game
 
-In order to save the game, enter `save` as your starting square and you will be prompted to enter a name for your save game. The game will create saves folder in the game root folder and in the saves file, a text file named as your save game. Next time you start the game, you will be asked if you want to load a saved game or start a new game. If you want to load a saved game(y), you can enter the name of the saved game and continue playing.
+In order to save the game, enter 'save' and you will be prompted to enter a name for your saved game. The game will create a saves folder in the game root folder and in the saves file, a text file named as your save game.
+
+### Loading the game
+When loading a saved game, the player should select the correct number of the players for the saved game. If the saved game will be continued on the network, other players should enter their names they had picked for the saved game correctly when prompted.
 
 ### Challenge mode
 
@@ -38,6 +41,6 @@ When you pass `challenge` as an argument to `ruby start_game.rb`, the game will 
 
 Players can set how long a game will last. After the specified time, the game will be over and the player with the most points will win. If the time ends while making a word, the word will not count.
 
-### 2-Player game over network connection
+### Multilayer game over a network connection
 
-Pass `network` as an argument to `ruby start_game.rb` and a server will fire up at port 2000 on your localhost. When another computer on the network runs `ruby join_game.rb your_ip_address`, a game will start. The connecting computer doesn't need to have the whole game script. If a game doesn't start, your firewall might be blocking incoming requests. Make sure to make the necessary adjustments.
+When picked, a server will fire up at port 2000 on your localhost. The player will be prompted about the number of the players that will play the game. When another computers (as many as specified by the player) on the network run 'ruby join_game.rb your_ip_address', a game will start. The connecting computers don't need to have the whole game script. If a game doesn't start, the firewall might be blocking incoming requests. Make sure to make the necessary adjustments.

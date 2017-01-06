@@ -4,7 +4,7 @@
 * Number of Players
 	You can play the game as 2, 3, or 4 players.
 
-* The starting square and the direction of a word
+* Making a word
 	State the starting square of a word using the names of the columns and the rows: eg.
 	'h8', 'b12'. When the player states the starting square and the direction ('r' for 
 	right or 'd' for down) of a word, the game will make a range for it. For example, when 
@@ -34,6 +34,11 @@
 	for your saved game. The game will create a saves folder in the game root folder and 
 	in the saves file, a text file named as your save game.
 
+* Loading the game
+	When loading a saved game, the player should select the correct number of the players
+	for the saved game. If the saved game will be continued on the network, other players
+	should enter their names they had picked for the saved game correctly when prompted.
+
 * Challenge mode
 	When on challenge mode, if the player enters a word that is not in the dictionary, 
 	the turn will be passed.
@@ -43,12 +48,13 @@
 	be over and the player with the most points will win. If the time ends while making
 	a word, the word will not count.
 
-* 2-Player game over network connection
-	When picked, a server will fire up at port 2000 on your localhost. When another 
-	computer on the network runs 'ruby join_game.rb your_ip_address', a game will start. 
-	The connecting computer doesn't need to have the whole game script. If a game doesn't 
-	start, the firewall might be blocking incoming requests. Make sure to make the 
-	necessary adjustments.
+* Multiplayer game over a network connection
+	When picked, a server will fire up at port 2000 on your localhost. The player will
+	be prompted about the number of the players that will play the game. When another 
+	computers (as many as specified by the player) on the network run 'ruby join_game.rb
+	your_ip_address', a game will start. The connecting computers don't need to have t
+	he whole game script. If a game doesn't start, the firewall might be blocking incoming 
+	requests. Make sure to make the necessary adjustments.
 
 ==================================================================================================
 

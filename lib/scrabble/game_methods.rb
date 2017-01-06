@@ -3,29 +3,23 @@
 # ===============================
 module Scrabble
 
-	def switch_stream
-		if @on_network
-			@input = @player.input
-			@output = @player.output
-		end
-	end
-
-	def set_time_limit(min)
-    @limit = Time.now. + min * 60 if min
+	def set_time_limit
+    @limit = Time.now. + min * 60 if @limit
   end
 
 	def rescue_interrupt
-		@output.puts "\nDo you want to save the game?(y/n):"
-		case @input.gets.chomp.downcase
+		@player.output.puts "\nThe game is about to be canceled by a player."
+		@player.output.puts "Do you want to save the game?(y/n):"
+		case @player.input.gets.chomp.downcase
 		when "y" then save
 		when "n" then exit_game
 		end
 	end
 
 	def rescue_type_error
-		@output.puts "\n==============================================="
-		@output.puts "One of the letters is not present on your rack!"
-		@output.puts "===============================================\n"
+		@player.output.puts "\n=================================================================="
+		@player.output.puts "One of the letters is not present on your rack!".center(70)
+		@player.output.puts "==================================================================\n"
 	end
 
 	def exit_game
@@ -46,34 +40,15 @@ module Scrabble
 		end
 	end
 
-	def display_saved_board_on_network
-		@board.display(STDOUT)
-		display_turn_statement
-		display_letters(@player_1, STDOUT)
-		@board.display(@stream)
-		display_turn_statement(@player_2, @stream)
-		display_letters(@player_2, @stream)
-		if @output == STDOUT
-			@stream.puts "\nWaiting for the other player to make a word..."
-		else
-			STDOUT.puts "\nWaiting for the other player to make a word..."
-		end
-		@saved = false
-	end
-
 	def display_turn_info
-		if @saved && @on_network
-			display_saved_board_on_network
+		if @on_network
+			@players_list.each { |player| @board.display(player.output) }
 		else
-			if @on_network
-				@players_list.each { |player| @board.display(player.output) }
-			else
-				@board.display(@player.output)
-			end
-			@output.puts "\nThe game will end at #{@limit.strftime('%H:%M')}.\n" if @limit
-			display_turn_statement
-			display_letters
+			@board.display(@player.output)
 		end
+		@player.output.puts "\nThe game will end at #{@limit.strftime('%H:%M')}.\n" if @limit
+		display_turn_statement
+		display_letters
 		@players_list.each do |player|
 			player.output.puts "\nWaiting for the other player to make a word..." if @player != player && @on_network
 		end
@@ -104,31 +79,29 @@ module Scrabble
 	def check_game_over
 		@game_over = true if @limit && Time.now  >= @limit
 		@game_over = true if @players_list.any? { |player| player.letters.empty? }
-		if @players == 2
-			@game_over = true if @pass == 6
-		elsif @players == 3
-			@game_over = true if @pass == 9
-		elsif @players == 4
-			@game_over = true if @pass == 12
+		if @players == 2 && @pass == 6
+			@game_over = true
+		elsif @players == 3 && @pass == 9
+			@game_over = true
+		elsif @players == 4 && @pass == 12
+			@game_over = true
 		end
 	end
 
-	def finish
-		puts "TIME IS UP!".center(70) if @limit
-		puts
-		puts @players_list
-		puts
-		puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
-		puts
-		if @on_network
-			@stream.each do |s|
-				s.puts "TIME IS UP!".center(70) if @limit
-				s.puts
-				s.puts @players_list
-				s.puts
-				s.puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
-				s.puts
-			end
+	def finish_message(output=STDOUT)
+		output.puts "TIME IS UP!".center(70) if @limit
+		output.puts
+		output.puts @players_list
+		output.puts
+		output.puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
+		output.puts
+	end
+
+	def put_finish_message
+		unless @on_network
+			finish_message
+		else
+			@players_list.each { |player| finish_message(player.output) }
 		end
 	end
 end
