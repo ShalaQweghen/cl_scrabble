@@ -41,11 +41,9 @@ class Game
 				reset_word_list
 				display_turn_info
 				@player.make_move
-				check_save
+				save_game if @player.start.to_s == 'save'
 				if @player.is_passing
-					pass_letters
 					pass_turn
-					next
 				else
 					continue_turn
 				end
@@ -68,6 +66,7 @@ class Game
 	end
 
 	def pass_turn
+		pass_letters
 		@pass += 1
 		check_game_over
 		turn
@@ -96,8 +95,12 @@ class Game
 				@game_over = true
 			end
 		elsif @challenging
-			@player.output.puts "\n'#{@player.word}' is not present in the dictionary. Your turn is passed."
-			@limit && Time.now >= @limit ? @game_over = true : end_turn
+			@player.rejected = true
+			if @limit && Time.now >= @limit
+				@game_over = true
+			else
+				end_turn
+			end
 		else
 			@player.output.puts "\n=================================================================="
 			@player.output.puts "'#{@player.word}' is not present in the dictionary. Try again.".center(70)

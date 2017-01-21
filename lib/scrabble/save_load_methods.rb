@@ -15,26 +15,24 @@ module Scrabble
 		end
 	end
 
-	def check_save
-		if @player.start.to_s == 'save'
-			@player.output.puts "Please enter a name for your saved game:"
-			@save_name = @player.input.gets.chomp.downcase
-			config = {player: @player, 
-								player_1: @player_1, 
-								player_2: @player_2, 
-								player_3: @player_4, 
-								player_4: @player_4, 
-								board: @board, 
-								bag: @bag, 
-								pass: @pass, 
-								turns: @turns, 
-								word_list: @word_list, 
-								challenging: @challenging,
-								players_list: @players_list }
-			Dir.mkdir("./saves") unless Dir.exists?("./saves")
-			File.open("./saves/#{@save_name}.txt", "w") { |file| file.puts(YAML::dump(config)) }
-			exit_game
-		end
+	def save_game
+		@player.output.puts "Please enter a name for your saved game:"
+		@save_name = @player.input.gets.chomp.downcase
+		config = {player: @player, 
+							player_1: @player_1, 
+							player_2: @player_2, 
+							player_3: @player_4, 
+							player_4: @player_4, 
+							board: @board, 
+							bag: @bag, 
+							pass: @pass, 
+							turns: @turns, 
+							word_list: @word_list, 
+							challenging: @challenging,
+							players_list: @players_list }
+		Dir.mkdir("./saves") unless Dir.exists?("./saves")
+		File.open("./saves/#{@save_name}.txt", "w") { |file| file.puts(YAML::dump(config)) }
+		exit_game
 	end
 
 	def load_or_new_game

@@ -4,14 +4,13 @@
 module Scrabble
 
 	def set_time_limit
-    @limit = Time.now. + min * 60 if @limit
+    @limit = Time.now. + @limit * 60 if @limit
   end
 
 	def rescue_interrupt
-		@player.output.puts "\nThe game is about to be canceled by a player."
-		@player.output.puts "Do you want to save the game?(y/n):"
-		case @player.input.gets.chomp.downcase
-		when "y" then save
+		puts "\nThe game is about to be canceled by a player. Do you want to save the game?(y/n):"
+		case gets.chomp.downcase
+		when "y" then save_game
 		when "n" then exit_game
 		end
 	end
@@ -50,6 +49,12 @@ module Scrabble
 		display_turn_statement
 		display_letters
 		@players_list.each do |player|
+			if player.rejected && @on_network
+				player.output.puts "\n=================================================================="
+				player.output.puts "'#{player.word}' is not present in the dictionary. Your turn is passed."
+				player.output.puts "=================================================================="
+			end
+			player.rejected = false
 			player.output.puts "\nWaiting for the other player to make a word..." if @player != player && @on_network
 		end
 	end

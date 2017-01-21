@@ -1,5 +1,5 @@
 class Player
-  attr_accessor :letters, :score, :turn_pointer, :name, :input, :output
+  attr_accessor :letters, :score, :turn_pointer, :name, :input, :output, :rejected
   attr_reader :word, :start, :direction, :passed, :is_passing
 
   def initialize(input=STDIN, output=STDOUT)
@@ -7,8 +7,9 @@ class Player
     @score = 0
     @input = input
     @output = output
-    @turn_pointer = turn_pointer
+    @turn_pointer = 0
     @is_passing = false
+    @rejected = false
   end
 
   def pick_from(bag)
@@ -27,7 +28,7 @@ class Player
 
   def make_move
     @is_passing = false
-    @output.puts "\nEnter your move (h8 r money):"
+    @output.puts "\nEnter your move (e.g. h8 r money):"
     @start, @direction, @word = @input.gets.chomp.downcase.split
     if @start == 'pass'
       @is_passing = true
