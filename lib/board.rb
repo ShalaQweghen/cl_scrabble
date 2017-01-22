@@ -3,19 +3,19 @@ class Board
 
 	def initialize
 		@board = {}
-		@bold_on = "\033[1m"
+		@bold_on = "\033[1m"			# => Escape characters for making the text bold on the terminal.
 		@bold_off = "\033[0m"
-		@t_line = "\u2550\u2550\u2550\u2566"
+		@t_line = "\u2550\u2550\u2550\u2566"		# => Unicode characters for the borders and lines of the board.
 		@m_line = "\u2550\u2550\u2550\u256C"
 		@b_line = "\u2550\u2550\u2550\u2569"
-		@hor = "\u2551"
-		@ver = "\u2550"
-		@lcu = "\u2554"
-		@rcu = "\u2557"
-		@lcm = "\u2560"
-		@rcm = "\u2563"
-		@lcd = "\u255A"
-		@rcd = "\u255D"
+		@hor = "\u2551"				# => Horizontal line		
+		@ver = "\u2550"				# => Vertical line
+		@lcu = "\u2554"				# => Top left corner
+		@rcu = "\u2557"				# => Top right corner
+		@lcm = "\u2560"				# => Middle left corner
+		@rcm = "\u2563"				# => Middle right corner
+		@lcd = "\u255A"				# => Bottom left corner
+		@rcd = "\u255D"				# => Bottom right corner
 		prepare_board
 		place_bonus
 	end
@@ -24,7 +24,7 @@ class Board
 		rows = split_rows.reverse
 		row_number = 15
 		output.puts "\n     a   b   c   d   e   f   g   h   i   j   k   l   m   n   o"
-		output.puts "   #{@lcu + @t_line * 14 + @ver + @ver + @ver + @rcu}"
+		output.puts "   #{@lcu + @t_line * 14 + @ver * 3 + @rcu}"
 		rows.each do |row|
 			if row_number < 10
 				output.print "#{row_number}  "
@@ -32,14 +32,15 @@ class Board
 				output.print "#{row_number} "
 			end
 			row.each do |value|
+				# According to the bonus type, change colors.
 				if value == "3w"
-					output.print "#{@hor}\x1b[31m#{value} \x1b[00m"
+					output.print "#{@hor}\x1b[31m#{value} \x1b[00m"			# => Escape characters for red color.
 				elsif value == "2w"
-					output.print "#{@hor}\x1b[35m#{value} \x1b[00m"
+					output.print "#{@hor}\x1b[35m#{value} \x1b[00m"			# => Escape characters for purple color.
 				elsif value == "3l"
-					output.print "#{@hor}\x1b[34m#{value} \x1b[00m"
+					output.print "#{@hor}\x1b[34m#{value} \x1b[00m"			# => Escape characters for violet color.
 				elsif value == "2l"
-					output.print "#{@hor}\x1b[36m#{value} \x1b[00m"
+					output.print "#{@hor}\x1b[36m#{value} \x1b[00m"			# => Escape characters for blue color.
 				else
 					output.print "#{@hor}#{@bold_on} #{value} #{@bold_off}"
 				end
@@ -47,9 +48,9 @@ class Board
 			output.print "#{@hor} #{row_number}"
 			row_number -= 1
 			if row_number > 0
-				output.puts "\n   #{@lcm + @m_line * 14 + @ver + @ver + @ver + @rcm}"
+				output.puts "\n   #{@lcm + @m_line * 14 + @ver * 3 + @rcm}"
 			else
-				output.puts "\n   #{@lcd + @b_line * 14 + @ver + @ver + @ver + @rcd}"
+				output.puts "\n   #{@lcd + @b_line * 14 + @ver * 3 + @rcd}"
 			end
 		end
 		output.puts "     a   b   c   d   e   f   g   h   i   j   k   l   m   n   o"
@@ -57,6 +58,7 @@ class Board
 
 	private
 
+	# Makes spot key symbols as a combination of a letter and a number: e.g. h8
 	def prepare_board
 		(1..15).each do |number|
 			("a".."o").each do |letter|
@@ -65,6 +67,7 @@ class Board
 		end
 	end
 
+	# Splits the values of the board hash into an array of arrays, each containing 15 values.
 	def split_rows
 		@board.values.each_slice(15).to_a
 	end

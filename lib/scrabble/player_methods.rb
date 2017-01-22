@@ -19,9 +19,9 @@ module Scrabble
 	def set_players
 		@player_1 = Player.new
 		if @on_network
-			@player_2 = Player.new(@stream[0], @stream[0])
-			@player_3 = Player.new(@stream[1], @stream[1]) if @players >= 3
-			@player_4 = Player.new(@stream[2], @stream[2]) if @players == 4
+			@player_2 = Player.new(@streams[0], @streams[0])
+			@player_3 = Player.new(@streams[1], @streams[1]) if @players >= 3
+			@player_4 = Player.new(@streams[2], @streams[2]) if @players == 4
 		else
 			@player_2 = Player.new
 			@player_3 = Player.new if @players >= 3
@@ -33,7 +33,9 @@ module Scrabble
 		@players_list = [@player_1, @player_2]
 		@players_list << @player_3 if @players >= 3
 		@players_list << @player_4 if @players == 4
-		@players_list.shuffle!
+		@players_list.shuffle!		# => Randomises the players order.
+		# Turn pointers are important that they help to decide whose turn it is. The initial
+		# pointers are each player's starting turn number and it increases accordingly each turn.
 		@players_list.each_with_index { |player, idx| player.turn_pointer = idx + 1 }
 	end
 
@@ -56,7 +58,7 @@ module Scrabble
 
 	def get_players_ready
 		@player = @players_list[0]
-		@players_list.each { |player| player.draw_letters(@bag.bag, player.letters, 7 - player.letters.size) }
+		@players_list.each { |player| player.draw_letters(@bag.bag, 7 - player.letters.size) }
 	end
 
 	def set_whose_turn
@@ -65,12 +67,10 @@ module Scrabble
 
 	def set_winner
 		@players_list.each { |player| @points << player.score }
-		@winner = @points.index(@points.max)
-		case @winner
-		when 0 then @winner = @player_1
-		when 1 then @winner = @player_2
-		when 2 then @winner = @player_3
-		when 3 then @winner = @player_4
-		end
+		@winner = @players_list[@points.index(@points.max)]
+	end
+
+	def draw_letters
+		@player.draw_letters(@bag.bag, 7 - @player.letters.size)
 	end
 end

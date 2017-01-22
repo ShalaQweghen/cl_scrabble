@@ -58,7 +58,9 @@ module Scrabble
 		@word_list = config[:word_list]
 		@challenging = config[:challenging]
 		@players_list = config[:players_list]
+		# Assigned the appropriate input-output streams to players.
 		@players_list.each do |player|
+			# If a player's name is not in the stream names hash, it is assigned the local stream.
 			if @names[player.name]
 				player.output = @names[player.name]
 				player.input = @names[player.name]

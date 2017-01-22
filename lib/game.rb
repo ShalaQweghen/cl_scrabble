@@ -7,19 +7,19 @@ class Game
 		@board = Board.new
 		@bag = Bag.new
 		@dic = File.open("./lib/dic/sowpods.txt").read.split("\n")
-		@non_discard = []
+		@non_discard = []		# => List of letters in the player's word which are already present on the board.
 		@word_list = []
 		@turns = 1
 		@pass = 0
-		@points = []
+		@points = []		# => List of the players' points to decide who has got the most points.
 		@names = config[:names] || {}
 		@limit = config[:limit]
-		@stream = config[:stream]
+		@streams = config[:streams]
 		@on_network = config[:network]
 		@challenging = config[:challenge]
 		@saved = config[:saved]
-		@players = @on_network ? config[:stream].length + 1 : 2
-		@bold_on = "\033[1m"
+		@players = @on_network ? config[:streams].length + 1 : 2
+		@bold_on = "\033[1m"			# => Escape characters for making the text bold on the terminal.
 		@bold_off = "\033[0m"
 		start_new_or_saved_game
 	end
@@ -54,17 +54,6 @@ class Game
 		end_game
 	end
 
-	def pass_letters
-		@player.pass
-		begin
-			change_letters
-		rescue TypeError
-			rescue_type_error
-			pass_letters
-		end
-		@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
-	end
-
 	def pass_turn
 		pass_letters
 		@pass += 1
@@ -80,7 +69,7 @@ class Game
 			begin
 				discard_used_letters
 			rescue TypeError
-				rescue_type_error
+				display_error_message
 				@player.make_move
 				continue_turn
 				proceed
@@ -88,23 +77,21 @@ class Game
 			if (@limit && Time.now < @limit) || !@limit
 				give_points
 				place_word
-				@player.draw_letters(@bag.bag, @player.letters, 7 - @player.letters.size)
+				draw_letters
 				display_turn_info if @on_network
 				end_turn
 			elsif Time.now >= @limit
 				@game_over = true
 			end
 		elsif @challenging
-			@player.rejected = true
+			@player.is_rejected = true
 			if @limit && Time.now >= @limit
 				@game_over = true
 			else
 				end_turn
 			end
 		else
-			@player.output.puts "\n=================================================================="
-			@player.output.puts "'#{@player.word}' is not present in the dictionary. Try again.".center(70)
-			@player.output.puts "=================================================================="
+			display_mistake_message
 			@player.make_move
 			continue_turn
 		end

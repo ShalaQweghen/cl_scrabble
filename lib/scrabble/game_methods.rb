@@ -4,6 +4,9 @@
 module Scrabble
 
 	def set_time_limit
+		# The initial @limit stores minutes specified by the user (otherwise nil). The method adds those minutes to the
+		# time at the moment of the game start. @limit now stores the datetime object indicating the end
+		# of the game.
     @limit = Time.now. + @limit * 60 if @limit
   end
 
@@ -15,17 +18,29 @@ module Scrabble
 		end
 	end
 
-	def rescue_type_error
+	def display_error_message
 		@player.output.puts "\n=================================================================="
 		@player.output.puts "One of the letters is not present on your rack!".center(70)
 		@player.output.puts "==================================================================\n"
+	end
+
+	def display_mistake_message
+		if @turns == 1 && @player.start != "h8"
+			@player.output.puts "\n=================================================================="
+			@player.output.puts "The first word should start from square 'h8'.".center(70)
+			@player.output.puts "=================================================================="
+		else
+			@player.output.puts "\n=================================================================="
+			@player.output.puts "'#{@player.word}' is not present in the dictionary. Try again.".center(70)
+			@player.output.puts "=================================================================="
+		end
 	end
 
 	def exit_game
 		at_exit do
 			puts "\nGOODBYE!"
 			if @on_network
-				@stream.each { |s| s.puts "\nGOODBYE!" }
+				@streams.each { |s| s.puts "\nGOODBYE!" }
 			end
 		end
 		exit
@@ -49,12 +64,12 @@ module Scrabble
 		display_turn_statement
 		display_letters
 		@players_list.each do |player|
-			if player.rejected && @on_network
+			if player.is_rejected && @on_network
 				player.output.puts "\n=================================================================="
 				player.output.puts "'#{player.word}' is not present in the dictionary. Your turn is passed."
 				player.output.puts "=================================================================="
 			end
-			player.rejected = false
+			player.is_rejected = false
 			player.output.puts "\nWaiting for the other player to make a word..." if @player != player && @on_network
 		end
 	end
@@ -81,6 +96,19 @@ module Scrabble
 		end
 	end
 
+	def pass_letters
+		@player.pass
+		begin
+			change_letters
+		rescue TypeError
+			display_error_message
+			pass_letters
+		end
+		draw_letters
+	end
+
+	# The game is over if the time limit is up, any one of the players finishes their letters and there are no letters left
+	# in the bag or a certain number of turns are passed one after another.
 	def check_game_over
 		@game_over = true if @limit && Time.now  >= @limit
 		@game_over = true if @players_list.any? { |player| player.letters.empty? }
@@ -96,7 +124,7 @@ module Scrabble
 	def finish_message(output=STDOUT)
 		output.puts "TIME IS UP!".center(70) if @limit
 		output.puts
-		output.puts @players_list
+		output.puts @players_list		# => This prints each of the players in the list.
 		output.puts
 		output.puts "#{@winner.name.upcase} wins the game with #{@winner.score} points!".center(70)
 		output.puts

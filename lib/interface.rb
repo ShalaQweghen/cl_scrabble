@@ -37,22 +37,21 @@ class Interface
 
   def start_network_game
     print "\nHow many player will there be?: "
-    number = gets.chomp.to_i - 1
-    if number > 1 && number < 5
+    players = gets.chomp.to_i - 1
+    if players > 1 && players < 5
       options = give_secondary_options
       server = TCPServer.open("0.0.0.0", 2000)
       puts "\nlocalhost:2000 fired up... Waiting for an opponent to join..."
       puts
       streams, names = [], {}
-      number.times { streams << server.accept }
+      players.times { streams << server.accept }    # => Populates the streams array with as many streams as specified by the player.
       if options[:saved]
         streams.each do |stream|
-          stream.puts "You are about to continue a saved game."
-          stream.puts "Enter your name in your previous game:"
-          names[stream.gets.chomp] = stream
+          stream.puts "You are about to continue a saved game. Enter your name in your previous game:"
+          names[stream.gets.chomp] = stream      # => Assigns the names of the remote players to their streams in the names hash
         end
       end
-      options[:stream] = streams
+      options[:streams] = streams
       options[:network] = true
       options[:names] = names
       Game.new(options)
