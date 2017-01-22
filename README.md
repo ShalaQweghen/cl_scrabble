@@ -1,6 +1,6 @@
 # Command-Line Scrabble
 
-Complete with optional challenge mode, time limit and multiplayer over a network connection.
+Complete with optional challenge mode, time limit and multiplayer over a network connection. You can choose different options from the game interface.
 
 If you don't know how to play Scrabble, click [here](https://en.wikipedia.org/wiki/Scrabble) for rules
 
@@ -35,12 +35,19 @@ When loading a saved game, the player should select the correct number of the pl
 
 ### Challenge mode
 
-When you pass `challenge` as an argument to `ruby start_game.rb`, the game will start in the challenge mode. If a player enters a word that is not in the dictionary, his or her turn will be passed.
+When selected, if a player enters a word that is not in the dictionary, his or her turn will be passed.
 
 ### Time limit
 
-Players can set how long a game will last. After the specified time, the game will be over and the player with the most points will win. If the time ends while making a word, the word will not count.
+Players can set how long a game will last in minutes. After the specified time, the game will be over and the player with the most points will win. If the time ends while making a word, the word will not count.
 
 ### Multilayer game over a network connection
 
-When picked, a server will fire up at port 2000 on your localhost. The player will be prompted about the number of the players that will play the game. When another computers (as many as specified by the player) on the network run 'ruby join_game.rb your_ip_address', a game will start. The connecting computers don't need to have the whole game script. If a game doesn't start, the firewall might be blocking incoming requests. Make sure to make the necessary adjustments.
+When selected, a server will fire up at port 2000 on your localhost. The player will be prompted about the number of the players that will play the game. When another computers (as many as specified by the player) on the network run 'ruby join_game.rb your_ip_address', a game will start. The connecting computers don't need to have the whole game script. If a game doesn't start, the firewall might be blocking incoming requests. Make sure to make the necessary adjustments.
+
+### Screenshots
+
+![](pics/1.png)
+![](pics/2.png)
+![](pics/3.png)
+![](pics/4.png)
